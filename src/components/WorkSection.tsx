@@ -117,7 +117,7 @@ export const WorkSection: React.FC<WorkSectionProps> = ({ setActiveTab }) => {
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif font-bold tracking-tight leading-tight">
             Selected <span className="italic font-normal">Works.</span>
           </h2>
-          <p className="mt-4 text-sm text-[#F5F0E8]/70 leading-relaxed font-sans">
+          <p className="mt-4 text-sm text-text-dim/70 leading-relaxed font-sans">
             A curation of conceptual releases aligning motion synthesis, audio dynamics, and pristine codebase symmetry. 
             Click any project card to access its interactive control console.
           </p>
@@ -129,9 +129,9 @@ export const WorkSection: React.FC<WorkSectionProps> = ({ setActiveTab }) => {
             <button
               key={cat}
               onClick={() => setFilter(cat)}
-              className={`px-5 py-2.5 text-[10px] tracking-[0.25em] font-mono font-bold transition-all duration-300 cursor-pointer ${
+              className={`px-5 py-2.5 text-[10px] tracking-[0.25em] font-mono font-bold transition-[background-color,color] duration-300 cursor-pointer ${
                 filter === cat
-                  ? "bg-saffron text-[#0C0C0C]"
+                  ? "bg-saffron text-[var(--bg)]"
                   : "text-text-dim/85 hover:text-saffron hover:bg-saffron/5"
               }`}
             >
@@ -158,7 +158,7 @@ export const WorkSection: React.FC<WorkSectionProps> = ({ setActiveTab }) => {
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.5 }}
               onClick={() => handleWorkClick(filteredWorks[0])}
-              className="lg:col-span-7 group cursor-pointer border border-saffron/15 bg-bg-card hover:border-saffron/40 hover:bg-bg-card-hover transition-all duration-300 flex flex-col justify-between"
+              className="lg:col-span-7 group cursor-pointer border border-saffron/15 bg-bg-card hover:border-saffron/40 hover:bg-bg-card-hover transition-[background-color,border-color] duration-300 flex flex-col justify-between"
             >
               <div>
                 {/* Header Meta Line */}
@@ -173,7 +173,7 @@ export const WorkSection: React.FC<WorkSectionProps> = ({ setActiveTab }) => {
                     src={filteredWorks[0].thumbnail}
                     alt={filteredWorks[0].title}
                     referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-102 transition-all duration-500"
+                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-102 transition-[filter,transform] duration-500"
                   />
                   {/* Decorative corner lines framing the image like a high-end photography layout */}
                   <div className="absolute top-2 left-2 w-2 h-[1px] bg-saffron/40" />
@@ -234,7 +234,7 @@ export const WorkSection: React.FC<WorkSectionProps> = ({ setActiveTab }) => {
                     exit={{ opacity: 0, scale: 0.98 }}
                     transition={{ duration: 0.4, delay: idx * 0.05 }}
                     onClick={() => handleWorkClick(item)}
-                    className="group cursor-pointer border border-saffron/10 bg-bg-card hover:border-saffron/30 hover:bg-bg-card-hover transition-all duration-300 p-5 flex flex-col justify-between"
+                    className="group cursor-pointer border border-saffron/10 bg-bg-card hover:border-saffron/30 hover:bg-bg-card-hover transition-[background-color,border-color] duration-300 p-5 flex flex-col justify-between"
                   >
                     <div className="flex items-start space-x-4">
                       {/* Smaller Cover Image */}
@@ -243,7 +243,7 @@ export const WorkSection: React.FC<WorkSectionProps> = ({ setActiveTab }) => {
                           src={item.thumbnail}
                           alt={item.title}
                           referrerPolicy="no-referrer"
-                          className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                          className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-[filter] duration-500"
                         />
                       </div>
 
@@ -261,7 +261,7 @@ export const WorkSection: React.FC<WorkSectionProps> = ({ setActiveTab }) => {
                       </div>
                     </div>
 
-                    <div className="mt-4 pt-3 border-t border-saffron/5 flex justify-between items-center text-[10px] font-mono text-[#F5F0E8]/60">
+                    <div className="mt-4 pt-3 border-t border-saffron/5 flex justify-between items-center text-[10px] font-mono text-text-dim/60">
                       <span className="truncate max-w-[200px]">{item.tools.slice(0, 2).join(" • ")}</span>
                       <div className="flex items-center space-x-1 group-hover:text-saffron transition-colors font-bold">
                         <span>LAUNCH</span>

@@ -3,104 +3,106 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from "react";
-import { Send, ShieldAlert, CheckCircle2, UserCheck, ShieldClose, Lock } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import emailjs from "@emailjs/browser";
+import { Send, CheckCircle2, AlertCircle, Lock, LogOut } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
-import { Message } from "../types";
+import {
+  GoogleAuthProvider,
+  User,
+  getRedirectResult,
+  onAuthStateChanged,
+  signInWithRedirect,
+  signOut,
+} from "firebase/auth";
+import { auth } from "../firebase";
 import { SectionContainer, fadeInUpVariants } from "./SectionContainer";
 
-export const ContactSection: React.FC = () => {
-  // Authentication Simulate State
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [isSigningIn, setIsSigningIn] = useState<boolean>(false);
-  const [userProfile, setUserProfile] = useState<{ name: string; email: string } | null>(null);
+const emailJsConfig = {
+  serviceId: import.meta.env.VITE_EMAILJS_SERVICE_ID,
+  templateId: import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+  publicKey: import.meta.env.VITE_EMAILJS_PUBLIC_KEY,
+};
 
-  // Form entries
+export const ContactSection: React.FC = () => {
+  const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
   const [messageText, setMessageText] = useState<string>("");
+  const [user, setUser] = useState<User | null>(null);
+  const [isSigningIn, setIsSigningIn] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [submitSuccess, setSubmitSuccess] = useState<boolean>(false);
-  const [msgCount, setMsgCount] = useState<number>(0);
-
-  // Inquiries Logs database for persistence simulation
-  const [logs, setLogs] = useState<Message[]>([]);
+  const [submitError, setSubmitError] = useState<string>("");
+  const [authError, setAuthError] = useState<string>("");
 
   useEffect(() => {
-    const savedUser = localStorage.getItem("draexon_user");
-    if (savedUser) {
-      try {
-        const parsed = JSON.parse(savedUser);
-        setUserProfile(parsed);
-        setIsAuthenticated(true);
-      } catch (e) {}
-    }
+    getRedirectResult(auth).catch((error) => {
+      setAuthError(error instanceof Error ? error.message : "Google sign in failed.");
+    });
 
-    const savedLogs = localStorage.getItem("draexon_inquiries");
-    if (savedLogs) {
-      try {
-        setLogs(JSON.parse(savedLogs));
-      } catch (e) {}
-    }
+    return onAuthStateChanged(auth, (nextUser) => {
+      setUser(nextUser);
+      setName(nextUser?.displayName || "");
+      setEmail(nextUser?.email || "");
+    });
   }, []);
 
-  const handleGoogleSignIn = () => {
+  const handleGoogleSignIn = async () => {
     if (isSigningIn) return;
+
     setIsSigningIn(true);
+    setAuthError("");
 
-    // Simulated quick loading loop
-    setTimeout(() => {
-      const mockProfile = {
-        name: "Weave Guest",
-        email: "weave.craftsman@gmail.com",
-      };
-      localStorage.setItem("draexon_user", JSON.stringify(mockProfile));
-      setUserProfile(mockProfile);
-      setIsAuthenticated(true);
+    try {
+      const provider = new GoogleAuthProvider();
+      await signInWithRedirect(auth, provider);
+    } catch (error) {
+      setAuthError(error instanceof Error ? error.message : "Google sign in failed.");
+    } finally {
       setIsSigningIn(false);
-    }, 1000);
-  };
-
-  const handleSignOut = () => {
-    localStorage.removeItem("draexon_user");
-    setUserProfile(null);
-    setIsAuthenticated(false);
-    setSubmitSuccess(false);
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!isAuthenticated || !messageText.trim() || isSubmitting) return;
-
-    if (msgCount >= 3) {
-      alert("Limited to 3 messages per day in public preview.");
-      return;
     }
+  };
+
+  const handleSignOut = async () => {
+    await signOut(auth);
+    setMessageText("");
+    setSubmitSuccess(false);
+    setSubmitError("");
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name.trim() || !email.trim() || !messageText.trim() || isSubmitting) return;
 
     setIsSubmitting(true);
+    setSubmitSuccess(false);
+    setSubmitError("");
 
-    setTimeout(() => {
-      const newInquiry: Message = {
-        id: `inq-${Date.now()}`,
-        name: userProfile?.name || "Weave Guest",
-        email: userProfile?.email || "weave.craftsman@gmail.com",
-        service: "Direct Client Inquiry",
-        budget: "$5,000",
-        content: messageText,
-        timestamp: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })
-      };
+    try {
+      await emailjs.send(
+        emailJsConfig.serviceId,
+        emailJsConfig.templateId,
+        {
+          from_name: name,
+          from_email: email,
+          message: messageText,
+        },
+        emailJsConfig.publicKey
+      );
 
-      const updated = [...logs, newInquiry];
-      setLogs(updated);
-      localStorage.setItem("draexon_inquiries", JSON.stringify(updated));
-
+      setName("");
+      setEmail("");
       setMessageText("");
-      setIsSubmitting(false);
       setSubmitSuccess(true);
-      setMsgCount((prev) => prev + 1);
 
       setTimeout(() => {
         setSubmitSuccess(false);
       }, 4000);
-    }, 1000);
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : "Message transmission failed.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -108,14 +110,10 @@ export const ContactSection: React.FC = () => {
       id="contact" 
       customPadding="px-5 sm:px-8 md:px-16 lg:px-24 py-16 md:py-24"
     >
-      
-      {/* Centered-aligned layout */}
       <motion.div 
         variants={fadeInUpVariants}
         className="max-w-xl mx-auto text-center space-y-10"
       >
-        
-        {/* Header Tags */}
         <div className="space-y-4">
           <p className="font-mono text-[10px] sm:text-xs text-saffron tracking-[0.3em] uppercase font-semibold">// LET'S TALK</p>
           <h2 className="text-4xl sm:text-5xl font-serif font-black tracking-tight text-text-main leading-tight-none uppercase">
@@ -129,105 +127,101 @@ export const ContactSection: React.FC = () => {
         <div className="w-full h-[1px] bg-saffron/10 max-w-[150px] mx-auto" />
 
         <AnimatePresence mode="wait">
-          {!isAuthenticated ? (
-            /* STATE 1: REQUISITE AUTHENTICATION PROMPT (Centered details) */
+          {!user ? (
             <motion.div
-              key="state-auth"
+              key="google-auth"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.3 }}
-              className="space-y-8 py-4 flex flex-col items-center"
+              className="space-y-5 border border-saffron/20 bg-bg-card p-6 sm:p-8"
             >
-              
-              {/* Saffron Outline, No-Fill Minimal Button */}
               <button
+                type="button"
                 onClick={handleGoogleSignIn}
                 disabled={isSigningIn}
-                className="w-full max-w-xs py-4 border border-saffron bg-transparent font-mono text-xs font-bold tracking-[0.25em] text-saffron hover:bg-saffron hover:text-[#0C0C0C] transition-all duration-300 disabled:opacity-50 cursor-pointer flex items-center justify-center space-x-3 rounded-none"
+                className="w-full px-6 py-4 border border-saffron bg-transparent text-saffron font-mono text-xs font-bold tracking-[0.2em] hover:bg-saffron hover:text-[var(--bg)] transition-[background-color,color,opacity] duration-300 disabled:opacity-40 cursor-pointer flex items-center justify-center space-x-2"
               >
-                {isSigningIn ? (
-                  <>
-                    <div className="w-3.5 h-3.5 border-2 border-saffron border-t-transparent animate-spin rounded-full" />
-                    <span>SYNCHRONIZING...</span>
-                  </>
-                ) : (
-                  <>
-                    <Lock className="w-3.5 h-3.5 shrink-0" />
-                    <span>CONTINUE WITH GOOGLE</span>
-                  </>
-                )}
+                <Lock className="w-3.5 h-3.5 shrink-0" />
+                <span>{isSigningIn ? "SIGNING IN..." : "SIGN IN WITH GOOGLE"}</span>
               </button>
 
-              {/* Subtitle Warning in specific text */}
-              <div className="space-y-1.5 max-w-sm">
-                <p className="text-[10px] sm:text-xs font-mono text-text-dim/50 tracking-wide font-medium">
-                  Login with Google to send me a message · Limited to 3 messages per day.
-                </p>
-                <p className="text-[9px] font-mono text-text-dim/40 uppercase tracking-widest pt-1">
-                  NO BACKEND SPAM // CLIENT-LED SECURED TELEMETRY ONLY
-                </p>
-              </div>
-
+              {authError && (
+                <div className="flex items-center justify-center space-x-1.5 text-red-400 font-mono text-[9px] font-bold tracking-wider">
+                  <AlertCircle className="w-3.5 h-3.5" />
+                  <span>{authError}</span>
+                </div>
+              )}
             </motion.div>
           ) : (
-            /* STATE 2: AUTHENTICATED EXCLUSIVE FORM WRAP */
             <motion.form
-              key="state-form"
+              key="contact-form"
               initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0 }}
+              exit={{ opacity: 0, scale: 0.98 }}
               transition={{ duration: 0.4 }}
               onSubmit={handleSubmit}
               className="space-y-6 text-left border border-saffron/20 bg-bg-card p-6 sm:p-8 transition-colors duration-300"
             >
-              
-              {/* Authenticated token bar */}
-              <div className="flex justify-between items-center pb-4 border-b border-saffron/10 font-mono text-[9px] text-text-dim/50">
-                <div className="flex items-center space-x-2 text-emerald-500">
-                  <UserCheck className="w-3.5 h-3.5" />
-                  <span className="font-bold uppercase">VERIFIED: {userProfile?.name}</span>
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 pb-4 border-b border-saffron/10 font-mono text-[9px] text-text-dim/50">
+                <div className="flex items-center space-x-3 text-emerald-500">
+                  {user.photoURL && (
+                    <img
+                      src={user.photoURL}
+                      alt={user.displayName || "Google profile"}
+                      referrerPolicy="no-referrer"
+                      className="w-9 h-9 rounded-full border border-saffron/30"
+                    />
+                  )}
+                  <div className="flex flex-col">
+                    <span className="font-bold uppercase">SIGNED IN AS</span>
+                    <span className="text-text-main text-[11px] normal-case tracking-normal">
+                      {user.displayName || "Google User"}
+                    </span>
+                  </div>
                 </div>
                 <button
                   type="button"
                   onClick={handleSignOut}
-                  className="text-saffron hover:underline tracking-widest font-bold uppercase transition-all cursor-pointer"
+                  className="text-saffron hover:text-text-main tracking-widest font-bold uppercase transition-colors cursor-pointer flex items-center space-x-1.5"
                 >
-                  [DISCONNECT]
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span>Sign Out</span>
                 </button>
               </div>
 
-              {/* Name entry (PRE-FILLED) */}
               <div className="space-y-2">
                 <label className="block text-[9px] font-mono uppercase text-text-dim/50 tracking-widest">
                   CLIENT ID NAME
                 </label>
                 <input
                   type="text"
-                  readOnly
-                  value={userProfile?.name || ""}
-                  className="w-full bg-bg-card-inset border border-saffron/10 text-xs font-mono p-3 text-text-dim/70 outline-none cursor-not-allowed select-none transition-colors duration-300"
+                  required
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Your name"
+                  className="w-full bg-bg-card-inset border border-saffron/10 text-xs font-mono p-3 text-text-main outline-none focus:border-saffron placeholder:text-text-dim/30 transition-colors duration-300"
                 />
               </div>
 
-              {/* Email entry (PRE-FILLED) */}
               <div className="space-y-2">
                 <label className="block text-[9px] font-mono uppercase text-text-dim/50 tracking-widest">
                   CLIENT ROUTE EMAIL
                 </label>
                 <input
                   type="email"
-                  readOnly
-                  value={userProfile?.email || ""}
-                  className="w-full bg-bg-card-inset border border-saffron/10 text-xs font-mono p-3 text-text-dim/70 outline-none cursor-not-allowed select-none transition-colors duration-300"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  className="w-full bg-bg-card-inset border border-saffron/10 text-xs font-mono p-3 text-text-main outline-none focus:border-saffron placeholder:text-text-dim/30 transition-colors duration-300"
                 />
               </div>
 
-              {/* Message content textarea */}
               <div className="space-y-2">
                 <div className="flex justify-between items-center text-[9px] font-mono text-text-dim/50 tracking-widest">
                   <span>TRANSMISSION SUMMARY</span>
-                  <span className="text-saffron">MSG {msgCount}/3 CAPSULE</span>
+                  <span className="text-saffron">EMAIL ROUTE</span>
                 </div>
                 <textarea
                   required
@@ -235,43 +229,44 @@ export const ContactSection: React.FC = () => {
                   onChange={(e) => setMessageText(e.target.value)}
                   rows={4}
                   placeholder="Detail your request, visual benchmarks, or computational layouts..."
-                  className="w-full bg-bg-card-inset border border-saffron/15 text-xs font-sans p-3 sm:p-4 outline-none focus:border-saffron placeholder:text-text-dim/30 focus:bg-bg-card-hover leading-relaxed text-text-main transition-all duration-300"
+                  className="w-full bg-bg-card-inset border border-saffron/15 text-xs font-sans p-3 sm:p-4 outline-none focus:border-saffron placeholder:text-text-dim/30 focus:bg-bg-card-hover leading-relaxed text-text-main transition-[background-color,border-color] duration-300"
                 />
               </div>
 
-              {/* Submit triggers and messages */}
               <div className="pt-2 flex flex-col sm:flex-row gap-4 items-center sm:justify-between text-xs">
                 <div className="min-h-[20px]">
                   {submitSuccess && (
                     <div className="flex items-center space-x-1.5 text-emerald-500 font-mono text-[9px] font-bold tracking-wider">
                       <CheckCircle2 className="w-3.5 h-3.5" />
-                      <span>SECURE MODEL COMMITTED TO LOCAL TERMINAL LOG</span>
+                      <span>MESSAGE SENT THROUGH EMAILJS</span>
+                    </div>
+                  )}
+                  {submitError && (
+                    <div className="flex items-center space-x-1.5 text-red-400 font-mono text-[9px] font-bold tracking-wider">
+                      <AlertCircle className="w-3.5 h-3.5" />
+                      <span>{submitError}</span>
                     </div>
                   )}
                 </div>
 
                 <button
                   type="submit"
-                  disabled={isSubmitting || !messageText.trim()}
-                  className="w-full sm:w-auto px-6 py-3 bg-saffron text-[#0C0C0C] font-mono text-xs font-bold tracking-[0.2em] hover:bg-transparent hover:text-saffron border border-saffron transition-all duration-300 disabled:opacity-40 cursor-pointer flex items-center justify-center space-x-2"
+                  disabled={isSubmitting || !name.trim() || !email.trim() || !messageText.trim()}
+                  className="w-full sm:w-auto px-6 py-3 bg-saffron text-[var(--bg)] font-mono text-xs font-bold tracking-[0.2em] hover:bg-transparent hover:text-saffron border border-saffron transition-[background-color,color,opacity] duration-300 disabled:opacity-40 cursor-pointer flex items-center justify-center space-x-2"
                 >
                   <Send className="w-3.5 h-3.5 shrink-0" />
                   <span>{isSubmitting ? "TRANSMITTING..." : "TRANSMIT MESSAGE"}</span>
                 </button>
               </div>
 
-              {/* Secure status */}
               <div className="pt-3 border-t border-saffron/5 flex items-center justify-center space-x-2 text-[9px] font-mono text-text-dim/40">
                 <Lock className="w-3 h-3 text-saffron" />
-                <span>SECURE CRYPTO TRANSMISSION SHIELD ACTIVE</span>
+                <span>EMAILJS CONFIG LOADED FROM VITE ENVIRONMENT</span>
               </div>
-
             </motion.form>
           )}
         </AnimatePresence>
-
       </motion.div>
-
     </SectionContainer>
   );
 };

@@ -134,7 +134,7 @@ export const EditsSection: React.FC = () => {
             {latestEdits.map((item) => (
               <div 
                 key={item.id}
-                className="group border border-saffron/10 bg-bg-card hover:border-saffron/30 transition-all duration-300 p-4 sm:p-5 flex items-start space-x-4"
+                className="group border border-saffron/10 bg-bg-card hover:border-saffron/30 transition-[border-color] duration-300 p-4 sm:p-5 flex items-start space-x-4"
               >
                 {/* Thumbnail */}
                 <div className="relative w-24 h-16 sm:w-28 sm:h-20 shrink-0 border border-saffron/10 bg-black/5 overflow-hidden">
@@ -142,7 +142,7 @@ export const EditsSection: React.FC = () => {
                     src={item.coverUrl}
                     alt={item.title}
                     referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500"
+                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-[filter,transform] duration-500"
                   />
                   {/* Subtle Accent Dots */}
                   <div className="absolute top-1 left-1 w-1 h-1 bg-saffron" />
@@ -178,7 +178,7 @@ export const EditsSection: React.FC = () => {
             {favouriteEdits.map((item) => (
               <div 
                 key={item.id}
-                className="group border border-saffron/10 bg-bg-card hover:border-saffron/30 transition-all duration-300 p-4 sm:p-5 flex items-start space-x-4"
+                className="group border border-saffron/10 bg-bg-card hover:border-saffron/30 transition-[border-color] duration-300 p-4 sm:p-5 flex items-start space-x-4"
               >
                 {/* Thumbnail */}
                 <div className="relative w-24 h-16 sm:w-28 sm:h-20 shrink-0 border border-saffron/10 bg-black/5 overflow-hidden">
@@ -186,7 +186,7 @@ export const EditsSection: React.FC = () => {
                     src={item.coverUrl}
                     alt={item.title}
                     referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500"
+                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-[filter,transform] duration-500"
                   />
                   <div className="absolute bottom-1 right-1">
                     <Star className="w-2.5 h-2.5 text-saffron fill-saffron" />

@@ -49,6 +49,17 @@ export const HomeSection: React.FC<HomeSectionProps> = ({
 }) => {
   const roles = ["Video Editor", "Music Producer", "Developer"];
   const [roleIndex, setRoleIndex] = useState(0);
+  const socialLinks = {
+    github: import.meta.env.VITE_GITHUB_URL,
+    linkedin: import.meta.env.VITE_LINKEDIN_URL,
+    discord: import.meta.env.VITE_DISCORD_URL,
+    instagram: import.meta.env.VITE_INSTAGRAM_URL,
+    spotify: import.meta.env.VITE_SPOTIFY_URL,
+  };
+  const portraitImages = {
+    dark: import.meta.env.VITE_PORTRAIT_DARK_URL,
+    light: import.meta.env.VITE_PORTRAIT_LIGHT_URL,
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -118,7 +129,7 @@ export const HomeSection: React.FC<HomeSectionProps> = ({
           {/* Bare social icon links */}
           <div className="flex flex-wrap items-center justify-center lg:justify-start gap-[28px] pb-2 relative z-20 w-full">
             <a
-              href="https://github.com/draexon"
+              href={socialLinks.github}
               target="_blank"
               rel="noopener noreferrer"
               className="text-text-main hover:text-saffron transition-[color,opacity] duration-300 opacity-75 hover:opacity-100 flex flex-col items-center justify-center space-y-1.5 group"
@@ -128,7 +139,7 @@ export const HomeSection: React.FC<HomeSectionProps> = ({
               <span className="text-[9px] tracking-[0.2em] font-mono uppercase text-text-dim group-hover:text-saffron transition-colors">Github</span>
             </a>
             <a
-              href="https://linkedin.com/in/draexon"
+              href={socialLinks.linkedin}
               target="_blank"
               rel="noopener noreferrer"
               className="text-text-main hover:text-saffron transition-[color,opacity] duration-300 opacity-75 hover:opacity-100 flex flex-col items-center justify-center space-y-1.5 group"
@@ -138,7 +149,7 @@ export const HomeSection: React.FC<HomeSectionProps> = ({
               <span className="text-[9px] tracking-[0.2em] font-mono uppercase text-text-dim group-hover:text-saffron transition-colors">LinkedIn</span>
             </a>
             <a
-              href="https://discord.gg/draexon"
+              href={socialLinks.discord}
               target="_blank"
               rel="noopener noreferrer"
               className="text-text-main hover:text-saffron transition-[color,opacity] duration-300 opacity-75 hover:opacity-100 flex flex-col items-center justify-center space-y-1.5 group"
@@ -148,7 +159,7 @@ export const HomeSection: React.FC<HomeSectionProps> = ({
               <span className="text-[9px] tracking-[0.2em] font-mono uppercase text-text-dim group-hover:text-saffron transition-colors">Discord</span>
             </a>
             <a
-              href="https://instagram.com/draexon"
+              href={socialLinks.instagram}
               target="_blank"
               rel="noopener noreferrer"
               className="text-text-main hover:text-saffron transition-[color,opacity] duration-300 opacity-75 hover:opacity-100 flex flex-col items-center justify-center space-y-1.5 group"
@@ -158,7 +169,7 @@ export const HomeSection: React.FC<HomeSectionProps> = ({
               <span className="text-[9px] tracking-[0.2em] font-mono uppercase text-text-dim group-hover:text-saffron transition-colors">Instagram</span>
             </a>
             <a
-              href="https://open.spotify.com/artist/draexon"
+              href={socialLinks.spotify}
               target="_blank"
               rel="noopener noreferrer"
               className="text-text-main hover:text-saffron transition-[color,opacity] duration-300 opacity-75 hover:opacity-100 flex flex-col items-center justify-center space-y-1.5 group"
@@ -197,7 +208,7 @@ export const HomeSection: React.FC<HomeSectionProps> = ({
             <button
               id="watch-cv-button"
               onClick={onOpenCv}
-              className="w-full sm:w-auto relative cursor-pointer px-10 py-4 bg-saffron text-noir border border-saffron font-mono text-xs font-bold tracking-[0.25em] transition-all duration-300 hover:bg-saffron/90 hover:scale-[1.02] flex items-center justify-center space-x-2 shadow-lg shadow-saffron/15 font-extrabold text-noir"
+              className="w-full sm:w-auto relative cursor-pointer px-10 py-4 bg-saffron text-noir border border-saffron font-mono text-xs font-bold tracking-[0.25em] transition-[background-color,transform] duration-300 hover:bg-saffron/90 hover:scale-[1.02] flex items-center justify-center space-x-2 shadow-lg shadow-saffron/15 font-extrabold text-noir"
             >
               <span>WATCH CV</span>
             </button>
@@ -205,7 +216,7 @@ export const HomeSection: React.FC<HomeSectionProps> = ({
             <button
               id="scroll-explore-button"
               onClick={() => setActiveTab("work")}
-              className="w-full sm:w-auto relative cursor-pointer px-10 py-4 border border-saffron bg-transparent text-saffron font-mono text-xs font-bold tracking-[0.25em] transition-all duration-300 hover:bg-saffron hover:text-noir flex items-center justify-center space-x-2"
+              className="w-full sm:w-auto relative cursor-pointer px-10 py-4 border border-saffron bg-transparent text-saffron font-mono text-xs font-bold tracking-[0.25em] transition-[background-color,color] duration-300 hover:bg-saffron hover:text-noir flex items-center justify-center space-x-2"
             >
               <span>SCROLL TO EXPLORE</span>
               <ArrowDown className="w-3.5 h-3.5" />
@@ -218,22 +229,20 @@ export const HomeSection: React.FC<HomeSectionProps> = ({
           <div className="relative w-[240px] lg:w-[380px] aspect-[4/5] max-w-full overflow-hidden flex items-center justify-center">
             {/* Dark mode image (high-contrast, moody, luminosity, 0.75 opacity) */}
             <img
-              src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=600&q=80"
+              src={portraitImages.dark}
               alt="DRAEXON Dark"
-              className="img-dark portrait-ink-dissolve absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
+              className="img-dark absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
               style={{
-                mixBlendMode: "luminosity",
-                opacity: 0.75,
+                objectFit: "contain",
               }}
             />
             {/* Light mode image (warmer tone, multiply, 0.65 opacity) */}
             <img
-              src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=600&q=80"
+              src={portraitImages.light}
               alt="DRAEXON Light"
-              className="img-light portrait-ink-dissolve absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
+              className="img-light absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
               style={{
-                mixBlendMode: "multiply",
-                opacity: 0.65,
+                objectFit: "contain",
               }}
             />
           </div>

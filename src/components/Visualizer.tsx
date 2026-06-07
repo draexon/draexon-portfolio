@@ -26,6 +26,22 @@ export const Visualizer: React.FC<VisualizerProps> = ({ isPlaying, activeTrackId
 
     let width = canvas.width;
     let height = canvas.height;
+    const css = getComputedStyle(document.documentElement);
+    const saffron = css.getPropertyValue("--saffron").trim();
+    const hexToRgb = (hex: string) => {
+      const value = hex.replace("#", "");
+      const normalized = value.length === 3
+        ? value.split("").map((char) => char + char).join("")
+        : value;
+      const numeric = Number.parseInt(normalized, 16);
+      return {
+        r: (numeric >> 16) & 255,
+        g: (numeric >> 8) & 255,
+        b: numeric & 255,
+      };
+    };
+    const saffronRgb = hexToRgb(saffron);
+    const saffronAlpha = (alpha: number) => `rgb(${saffronRgb.r} ${saffronRgb.g} ${saffronRgb.b} / ${alpha})`;
 
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
@@ -80,14 +96,14 @@ export const Visualizer: React.FC<VisualizerProps> = ({ isPlaying, activeTrackId
         const barWidth = (clientWidth / bufferLength) * 2.5;
         let x = 0;
 
-        ctx.fillStyle = "rgba(232, 88, 26, 0.08)";
+        ctx.fillStyle = saffronAlpha(0.08);
         ctx.fillRect(0, 0, clientWidth, clientHeight);
 
         // Center line
         ctx.beginPath();
         ctx.moveTo(0, clientHeight / 2);
         ctx.lineTo(clientWidth, clientHeight / 2);
-        ctx.strokeStyle = "rgba(232, 88, 26, 0.15)";
+        ctx.strokeStyle = saffronAlpha(0.15);
         ctx.lineWidth = 1;
         ctx.stroke();
 
@@ -99,7 +115,7 @@ export const Visualizer: React.FC<VisualizerProps> = ({ isPlaying, activeTrackId
 
           const y = clientHeight / 2 - barHeight / 2;
 
-          ctx.fillStyle = `rgba(232, 88, 26, ${0.4 + percent * 0.6})`;
+          ctx.fillStyle = saffronAlpha(0.4 + percent * 0.6);
           ctx.fillRect(x, y, barWidth - 1, barHeight);
 
           x += barWidth;
@@ -114,7 +130,7 @@ export const Visualizer: React.FC<VisualizerProps> = ({ isPlaying, activeTrackId
         for (let w = 0; w < waveCount; w++) {
           ctx.beginPath();
           const opacity = 0.08 + (w / waveCount) * 0.15;
-          ctx.strokeStyle = `rgba(232, 88, 26, ${opacity})`;
+          ctx.strokeStyle = saffronAlpha(opacity);
 
           for (let col = 0; col < clientWidth; col += 4) {
             const relativeX = col / clientWidth;
@@ -134,7 +150,7 @@ export const Visualizer: React.FC<VisualizerProps> = ({ isPlaying, activeTrackId
         }
 
         // Add modular grid dots
-        ctx.fillStyle = "rgba(232, 88, 26, 0.06)";
+        ctx.fillStyle = saffronAlpha(0.06);
         const dotGap = 20;
         for (let gx = 10; gx < clientWidth; gx += dotGap) {
           for (let gy = 10; gy < clientHeight; gy += dotGap) {

@@ -9,6 +9,13 @@ interface CvModalProps {
 
 export function CvModal({ isOpen, onClose }: CvModalProps) {
   const printAreaRef = useRef<HTMLDivElement>(null);
+  const socialLinks = {
+    github: import.meta.env.VITE_GITHUB_URL,
+    linkedin: import.meta.env.VITE_LINKEDIN_URL,
+    discord: import.meta.env.VITE_DISCORD_URL,
+    instagram: import.meta.env.VITE_INSTAGRAM_URL,
+    spotify: import.meta.env.VITE_SPOTIFY_URL,
+  };
 
   const handlePrint = () => {
     window.print();
@@ -30,11 +37,11 @@ A cinematic virtuoso and systems architect harmonizing filmmaking, sound synthes
 ---
 
 ## SOCIAL CHANNELS
-* GitHub: https://github.com/draexon
-* LinkedIn: https://linkedin.com/in/draexon
-* Discord: https://discord.gg/draexon
-* Instagram: https://instagram.com/draexon
-* Spotify: https://open.spotify.com/artist/draexon
+* GitHub: ${socialLinks.github}
+* LinkedIn: ${socialLinks.linkedin}
+* Discord: ${socialLinks.discord}
+* Instagram: ${socialLinks.instagram}
+* Spotify: ${socialLinks.spotify}
 
 ---
 
@@ -138,7 +145,7 @@ DRAEXON // CURRICULUM PORTFOLIO 2026
                 <button
                   id="export-pdf-action"
                   onClick={handlePrint}
-                  className="px-5 py-2.5 bg-saffron hover:bg-saffron/90 text-noir text-xs font-mono font-bold tracking-[0.2em] flex items-center space-x-2 border border-saffron transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer shadow-lg shadow-saffron/10"
+                  className="px-5 py-2.5 bg-saffron hover:bg-saffron/90 text-noir text-xs font-mono font-bold tracking-[0.2em] flex items-center space-x-2 border border-saffron transition-[background-color,transform] duration-300 transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer shadow-lg shadow-saffron/10"
                 >
                   <Printer className="w-4 h-4" />
                   <span>EXPORT CV / PDF</span>
@@ -148,7 +155,7 @@ DRAEXON // CURRICULUM PORTFOLIO 2026
                 <button
                   id="download-cv-action"
                   onClick={handleDownloadCv}
-                  className="px-5 py-2.5 border border-saffron bg-transparent hover:bg-saffron/10 text-saffron text-xs font-mono font-bold tracking-[0.2em] flex items-center space-x-2 transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+                  className="px-5 py-2.5 border border-saffron bg-transparent hover:bg-saffron/10 text-saffron text-xs font-mono font-bold tracking-[0.2em] flex items-center space-x-2 transition-[background-color,transform] duration-300 transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
                   title="Download standard MD file"
                 >
                   <Download className="w-4 h-4" />
@@ -159,7 +166,7 @@ DRAEXON // CURRICULUM PORTFOLIO 2026
                 <button
                   id="close-cv-modal-btn"
                   onClick={onClose}
-                  className="p-2.5 border border-border-theme hover:border-saffron/60 text-text-dim hover:text-saffron bg-bg-card hover:bg-bg-card-hover transition-all duration-300 cursor-pointer"
+                  className="p-2.5 border border-border-theme hover:border-saffron/60 text-text-dim hover:text-saffron bg-bg-card hover:bg-bg-card-hover transition-[background-color,border-color,color] duration-300 cursor-pointer"
                   title="Close document viewer"
                 >
                   <X className="w-4 h-4" />
@@ -173,7 +180,7 @@ DRAEXON // CURRICULUM PORTFOLIO 2026
               {/* CV HEADER - IDENTITY & SUMMARY */}
               <div className="flex flex-col md:flex-row justify-between items-start gap-6 border-b border-saffron/10 pb-8 mb-8">
                 <div className="space-y-3 max-w-xl">
-                  <span className="font-mono text-xs tracking-[0.4em] text-saffron uppercase font-bold block print:text-[#E8581A]">
+                  <span className="font-mono text-xs tracking-[0.4em] text-saffron uppercase font-bold block print:text-[var(--print-accent)]">
                     CREATIVE DIRECTOR & COMPUTER ENGINEER
                   </span>
                   <h1 className="text-4xl md:text-5xl font-serif font-extrabold uppercase tracking-wide text-text-main print:text-black">
@@ -206,17 +213,17 @@ DRAEXON // CURRICULUM PORTFOLIO 2026
                   {/* Real actual clickable network social links shown physically on the PDF */}
                   <div className="pt-2 border-t border-saffron/10 mt-1 flex flex-col space-y-1 text-[10px] text-text-dim/60 print:border-gray-200">
                     <span className="font-bold text-text-main text-[9px] tracking-wider uppercase">PORTFOLIO LINKS:</span>
-                    <a href="https://github.com/draexon" target="_blank" rel="noopener noreferrer" className="hover:text-saffron transition-colors flex items-center space-x-1">
-                      <span>• GitHub: github.com/draexon</span>
+                    <a href={socialLinks.github} target="_blank" rel="noopener noreferrer" className="hover:text-saffron transition-colors flex items-center space-x-1">
+                      <span>• GitHub: {socialLinks.github}</span>
                     </a>
-                    <a href="https://linkedin.com/in/draexon" target="_blank" rel="noopener noreferrer" className="hover:text-saffron transition-colors flex items-center space-x-1">
-                      <span>• LinkedIn: linkedin.com/in/draexon</span>
+                    <a href={socialLinks.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-saffron transition-colors flex items-center space-x-1">
+                      <span>• LinkedIn: {socialLinks.linkedin}</span>
                     </a>
-                    <a href="https://discord.gg/draexon" target="_blank" rel="noopener noreferrer" className="hover:text-saffron transition-colors flex items-center space-x-1">
-                      <span>• Discord: discord.gg/draexon</span>
+                    <a href={socialLinks.discord} target="_blank" rel="noopener noreferrer" className="hover:text-saffron transition-colors flex items-center space-x-1">
+                      <span>• Discord: {socialLinks.discord}</span>
                     </a>
-                    <a href="https://open.spotify.com/artist/draexon" target="_blank" rel="noopener noreferrer" className="hover:text-saffron transition-colors flex items-center space-x-1">
-                      <span>• Spotify: spotify.com/artist/draexon</span>
+                    <a href={socialLinks.spotify} target="_blank" rel="noopener noreferrer" className="hover:text-saffron transition-colors flex items-center space-x-1">
+                      <span>• Spotify: {socialLinks.spotify}</span>
                     </a>
                   </div>
 
@@ -245,7 +252,7 @@ DRAEXON // CURRICULUM PORTFOLIO 2026
                       {/* Role 1 */}
                       <div className="relative pl-4 border-l border-saffron/20 space-y-1.5 print:border-gray-300">
                         <div className="flex flex-wrap items-center justify-between gap-x-2 text-xs font-mono">
-                          <span className="text-saffron font-bold uppercase tracking-wider print:text-[#E8581A]">
+                          <span className="text-saffron font-bold uppercase tracking-wider print:text-[var(--print-accent)]">
                             CINEMATOGRAPHER & VIDEO EDITOR
                           </span>
                           <span className="text-text-dim/40 print:text-gray-500">2022 — PRESENT</span>
@@ -261,7 +268,7 @@ DRAEXON // CURRICULUM PORTFOLIO 2026
                       {/* Role 2 */}
                       <div className="relative pl-4 border-l border-saffron/20 space-y-1.5 print:border-gray-300">
                         <div className="flex flex-wrap items-center justify-between gap-x-2 text-xs font-mono">
-                          <span className="text-saffron font-bold uppercase tracking-wider print:text-[#E8581A]">
+                          <span className="text-saffron font-bold uppercase tracking-wider print:text-[var(--print-accent)]">
                             SOUND DESIGNER & ELECTRONIC PRODUCER
                           </span>
                           <span className="text-text-dim/40 print:text-gray-500">2020 — PRESENT</span>
@@ -277,7 +284,7 @@ DRAEXON // CURRICULUM PORTFOLIO 2026
                       {/* Role 3 */}
                       <div className="relative pl-4 border-l border-saffron/20 space-y-1.5 print:border-gray-300">
                         <div className="flex flex-wrap items-center justify-between gap-x-2 text-xs font-mono">
-                          <span className="text-saffron font-bold uppercase tracking-wider print:text-[#E8581A]">
+                          <span className="text-saffron font-bold uppercase tracking-wider print:text-[var(--print-accent)]">
                             FULL-STACK CREATIVE DEVELOPER
                           </span>
                           <span className="text-text-dim/40 print:text-gray-500">2018 — PRESENT</span>
@@ -426,7 +433,7 @@ DRAEXON // CURRICULUM PORTFOLIO 2026
                 onClick={handlePrint}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="flex items-center space-x-3 bg-saffron hover:bg-saffron/90 text-noir border-2 border-noir rounded-full px-6 py-4 font-mono text-xs font-black tracking-[0.2m] shadow-[0_8px_30px_rgba(232,88,26,0.35)] hover:shadow-[0_8px_40px_rgba(232,88,26,0.5)] transition-all duration-300 cursor-pointer transform font-extrabold"
+                className="flex items-center space-x-3 bg-saffron hover:bg-saffron/90 text-noir border-2 border-noir rounded-full px-6 py-4 font-mono text-xs font-black tracking-[0.2m] shadow-[0_8px_30px_var(--shadow-saffron-35)] hover:shadow-[0_8px_40px_var(--shadow-saffron-50)] transition-[background-color,box-shadow] duration-300 cursor-pointer transform font-extrabold"
               >
                 <div className="relative">
                   <Printer className="w-5 h-5 text-noir animate-pulse" />

@@ -86,7 +86,7 @@ export function SystemMonitor() {
             initial={{ opacity: 0, y: 15, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
-            className="pointer-events-auto flex items-center space-x-2.5 px-3.5 py-2 border border-saffron/20 bg-bg-card text-text-dim/80 hover:text-saffron hover:border-saffron/50 hover:bg-bg-card-hover transition-all duration-300 shadow-md backdrop-blur-sm group cursor-pointer text-[10px]"
+            className="pointer-events-auto flex items-center space-x-2.5 px-3.5 py-2 border border-saffron/20 bg-bg-card text-text-dim/80 hover:text-saffron hover:border-saffron/50 hover:bg-bg-card-hover transition-[background-color,border-color,color] duration-300 shadow-md backdrop-blur-sm group cursor-pointer text-[10px]"
           >
             <Activity className="w-3.5 h-3.5 text-saffron animate-pulse" />
             <span className="font-bold tracking-widest text-[9px] uppercase">
@@ -130,7 +130,7 @@ export function SystemMonitor() {
               <button
                 id="sys-monitor-toggle-close"
                 onClick={() => setIsOpen(false)}
-                className="p-1 rounded-none border border-saffron/15 text-text-dim/50 hover:text-saffron hover:border-saffron/65 hover:bg-bg-card-hover transition-all cursor-pointer"
+                className="p-1 rounded-none border border-saffron/15 text-text-dim/50 hover:text-saffron hover:border-saffron/65 hover:bg-bg-card-hover transition-[background-color,border-color,color] cursor-pointer"
                 title="Collapse system monitor"
               >
                 <Minimize2 className="w-3 h-3" />

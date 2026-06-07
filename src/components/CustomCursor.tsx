@@ -10,31 +10,14 @@ export const CustomCursor: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
-  const [theme, setTheme] = useState<"dark" | "light">("dark");
 
   const mouseX = useMotionValue(-100);
   const mouseY = useMotionValue(-100);
 
   useEffect(() => {
-    // Detect theme class on initialization
-    const isLightMode = document.documentElement.classList.contains("light");
-    setTheme(isLightMode ? "light" : "dark");
-
-    // Observe theme class changes
-    const observer = new MutationObserver(() => {
-      const isLightNow = document.documentElement.classList.contains("light");
-      setTheme(isLightNow ? "light" : "dark");
-    });
-
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    });
-
     // Only register custom cursors on devices supporting pointer hovering (desktop/touchpads)
     const mediaQuery = window.matchMedia("(pointer: fine)");
     if (!mediaQuery.matches) {
-      observer.disconnect();
       return;
     }
 
@@ -88,7 +71,6 @@ export const CustomCursor: React.FC = () => {
     window.addEventListener("mouseover", onMouseOver);
 
     return () => {
-      observer.disconnect();
       window.removeEventListener("mousemove", onMouseMove);
       document.removeEventListener("mouseleave", onMouseLeave);
       document.removeEventListener("mouseenter", onMouseEnter);
@@ -100,34 +82,18 @@ export const CustomCursor: React.FC = () => {
 
   if (!isVisible) return null;
 
-  const isLight = theme === "light";
-
   return (
     <motion.div
-      className={`fixed top-0 left-0 w-6 h-6 rounded-full border-2 pointer-events-none z-[99999] -translate-x-1/2 -translate-y-1/2 ${
-        isLight ? "mix-blend-multiply" : "mix-blend-screen"
-      }`}
+      className="custom-cursor fixed top-0 left-0 w-6 h-6 rounded-full border-2 pointer-events-none z-[99999] -translate-x-1/2 -translate-y-1/2 mix-blend-screen"
       style={{
         x: mouseX,
         y: mouseY,
         willChange: "transform",
+        backgroundColor: isHovered ? "color-mix(in srgb, var(--saffron) 20%, transparent)" : "transparent",
+        borderColor: isHovered ? "var(--saffron)" : "color-mix(in srgb, var(--saffron) 80%, transparent)",
       }}
       animate={{
         scale: isClicked ? 0.75 : isHovered ? 1.4 : 1,
-        backgroundColor: isHovered
-          ? isLight
-            ? "rgba(10, 10, 10, 0.15)"
-            : "rgba(232, 88, 26, 0.2)"
-          : isLight
-            ? "rgba(10, 10, 10, 0)"
-            : "rgba(232, 88, 26, 0)",
-        borderColor: isHovered
-          ? isLight
-            ? "rgba(10, 10, 10, 1)"
-            : "rgba(232, 88, 26, 1)"
-          : isLight
-            ? "rgba(10, 10, 10, 0.82)"
-            : "rgba(232, 88, 26, 0.8)",
       }}
       transition={{ duration: 0.1, ease: "easeOut" }}
     />

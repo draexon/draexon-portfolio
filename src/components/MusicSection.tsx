@@ -96,10 +96,10 @@ export const MusicSection: React.FC<MusicSectionProps> = ({
   ];
 
   const platforms = [
-    { name: "Spotify", url: "https://spotify.com", icon: "🟢" },
-    { name: "SoundCloud", url: "https://soundcloud.com", icon: "🟠" },
-    { name: "Bandcamp", url: "https://bandcamp.com", icon: "🔵" },
-    { name: "YouTube Music", url: "https://youtube.com", icon: "🔴" },
+    { name: "Spotify", url: import.meta.env.VITE_MUSIC_SPOTIFY_URL, icon: "🟢" },
+    { name: "SoundCloud", url: import.meta.env.VITE_MUSIC_SOUNDCLOUD_URL, icon: "🟠" },
+    { name: "Bandcamp", url: import.meta.env.VITE_MUSIC_BANDCAMP_URL, icon: "🔵" },
+    { name: "YouTube Music", url: import.meta.env.VITE_MUSIC_YOUTUBE_MUSIC_URL, icon: "🔴" },
   ];
 
   return (
@@ -115,7 +115,7 @@ export const MusicSection: React.FC<MusicSectionProps> = ({
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif font-bold tracking-tight leading-tight">
             Aural <span className="italic font-normal text-saffron">Footprint.</span>
           </h2>
-          <p className="mt-4 text-sm text-[#F5F0E8]/70 leading-relaxed font-sans">
+          <p className="mt-4 text-sm text-text-dim/70 leading-relaxed font-sans">
             Experimental structural ambient, bass architectures, and procedural modular synthesis. Grounding electronic computing with analog acoustic environments.
           </p>
         </div>
@@ -174,7 +174,7 @@ export const MusicSection: React.FC<MusicSectionProps> = ({
                 key={item.id}
                 className={`group border ${
                   isCurrent ? "border-saffron" : "border-saffron/15"
-                } bg-bg-card hover:border-saffron/40 transition-all duration-300 p-5 flex flex-col justify-between h-[230px]`}
+                } bg-bg-card hover:border-saffron/40 transition-[border-color] duration-300 p-5 flex flex-col justify-between h-[230px]`}
               >
                 <div>
                   <div className="flex justify-between items-start mb-3">
@@ -196,7 +196,7 @@ export const MusicSection: React.FC<MusicSectionProps> = ({
                       className={`p-2 rounded-none border ${
                         isCurrent
                           ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
-                          : "border-saffron/20 bg-saffron/5 text-saffron hover:bg-saffron hover:text-[#0C0C0C]"
+                          : "border-saffron/20 bg-saffron/5 text-saffron hover:bg-saffron hover:text-[var(--bg)]"
                       } transition-colors cursor-pointer`}
                       title={isCurrent ? "Pause synthesized model" : "Play procedural loop"}
                     >
@@ -216,9 +216,9 @@ export const MusicSection: React.FC<MusicSectionProps> = ({
                   <span className="text-saffron font-bold uppercase">{item.streams}</span>
                   {/* Platform Icons */}
                   <div className="flex space-x-1.5 text-xs">
-                    <a href="https://spotify.com" target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition-transform">🟢</a>
-                    <a href="https://soundcloud.com" target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition-transform">🟠</a>
-                    <a href="https://bandcamp.com" target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition-transform">🔵</a>
+                    <a href={import.meta.env.VITE_MUSIC_SPOTIFY_URL} target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition-transform">🟢</a>
+                    <a href={import.meta.env.VITE_MUSIC_SOUNDCLOUD_URL} target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition-transform">🟠</a>
+                    <a href={import.meta.env.VITE_MUSIC_BANDCAMP_URL} target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition-transform">🔵</a>
                   </div>
                 </div>
               </div>
@@ -245,7 +245,7 @@ export const MusicSection: React.FC<MusicSectionProps> = ({
                 key={item.id}
                 className={`group border ${
                   isCurrent ? "border-saffron" : "border-saffron/15"
-                } bg-bg-card hover:border-saffron/40 transition-all duration-300 p-5 flex flex-col justify-between h-[230px]`}
+                } bg-bg-card hover:border-saffron/40 transition-[border-color] duration-300 p-5 flex flex-col justify-between h-[230px]`}
               >
                 <div>
                   <div className="flex justify-between items-start mb-3">
@@ -267,7 +267,7 @@ export const MusicSection: React.FC<MusicSectionProps> = ({
                       className={`p-2 rounded-none border ${
                         isCurrent
                           ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
-                          : "border-saffron/20 bg-saffron/5 text-saffron hover:bg-saffron hover:text-[#0C0C0C]"
+                          : "border-saffron/20 bg-saffron/5 text-saffron hover:bg-saffron hover:text-[var(--bg)]"
                       } transition-colors cursor-pointer`}
                       title={isCurrent ? "Pause synthesized model" : "Play procedural loop"}
                     >
@@ -287,9 +287,9 @@ export const MusicSection: React.FC<MusicSectionProps> = ({
                   <span className="text-saffron font-bold uppercase">{item.streams}</span>
                   {/* Platform Icons */}
                   <div className="flex space-x-1.5 text-xs">
-                    <a href="https://spotify.com" target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition-transform">🟢</a>
-                    <a href="https://soundcloud.com" target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition-transform">🟠</a>
-                    <a href="https://bandcamp.com" target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition-transform">🔵</a>
+                    <a href={import.meta.env.VITE_MUSIC_SPOTIFY_URL} target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition-transform">🟢</a>
+                    <a href={import.meta.env.VITE_MUSIC_SOUNDCLOUD_URL} target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition-transform">🟠</a>
+                    <a href={import.meta.env.VITE_MUSIC_BANDCAMP_URL} target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition-transform">🔵</a>
                   </div>
                 </div>
               </div>
@@ -311,7 +311,7 @@ export const MusicSection: React.FC<MusicSectionProps> = ({
               href={plat.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 sm:px-4 sm:py-2 border border-saffron/15 bg-saffron/[0.02] hover:border-saffron hover:bg-saffron/10 text-text-dim/80 hover:text-saffron font-bold transition-all flex items-center space-x-2"
+              className="p-2 sm:px-4 sm:py-2 border border-saffron/15 bg-saffron/[0.02] hover:border-saffron hover:bg-saffron/10 text-text-dim/80 hover:text-saffron font-bold transition-[background-color,border-color,color] flex items-center space-x-2"
             >
               <span>{plat.icon}</span>
               <span className="tracking-widest uppercase">{plat.name}</span>

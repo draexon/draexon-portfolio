@@ -14,7 +14,7 @@ interface NavbarProps {
   activeTrackId: string | null;
   toggleAudio: () => void;
   theme: "dark" | "light";
-  setTheme: React.Dispatch<React.SetStateAction<"dark" | "light">>;
+  setTheme: (theme: "dark" | "light") => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -67,7 +67,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   const shouldBeVisible = isVisible || isOpen;
 
   return (
-    <nav className={`w-full bg-bg-nav/95 backdrop-blur-md border-b border-saffron/20 fixed top-0 left-0 right-0 z-50 text-text-main transition-all duration-300 ease-in-out ${
+    <nav className={`w-full bg-bg-nav/95 backdrop-blur-md border-b border-saffron/20 fixed top-0 left-0 right-0 z-50 text-text-main transition-transform duration-300 ease-in-out ${
       shouldBeVisible ? "translate-y-0" : "-translate-y-full"
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -113,7 +113,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Clean minimalist theme switcher */}
             <button
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="p-2.5 border border-saffron/25 text-text-dim hover:text-saffron hover:border-saffron transition-all duration-300 flex items-center justify-center cursor-pointer"
+              className="p-2.5 border border-saffron/25 text-text-dim hover:text-saffron hover:border-saffron transition-[border-color,color] duration-300 flex items-center justify-center cursor-pointer"
               title={theme === "dark" ? "Switch to White Mode" : "Switch to Dark Mode"}
             >
               {theme === "dark" ? <Sun className="w-3.5 h-3.5 stroke-[1.5]" /> : <Moon className="w-3.5 h-3.5 stroke-[1.5]" />}
@@ -129,7 +129,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             )}
             <button
               onClick={toggleAudio}
-              className={`p-2.5 border rounded-none cursor-pointer flex items-center justify-center transition-all duration-300 ${
+              className={`p-2.5 border rounded-none cursor-pointer flex items-center justify-center transition-[background-color,border-color,color] duration-300 ${
                 activeTrackId
                   ? "bg-saffron/10 border-saffron hover:bg-saffron/20 text-saffron"
                   : "border-saffron/30 hover:border-saffron text-text-dim hover:text-text-main"
@@ -149,7 +149,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Mobile quick theme switcher */}
             <button
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="p-2 border border-saffron/25 text-text-dim hover:text-saffron hover:border-saffron transition-all duration-300 flex items-center justify-center"
+              className="p-2 border border-saffron/25 text-text-dim hover:text-saffron hover:border-saffron transition-[border-color,color] duration-300 flex items-center justify-center"
               title={theme === "dark" ? "Switch to White Mode" : "Switch to Dark Mode"}
             >
               {theme === "dark" ? <Sun className="w-3.5 h-3.5 stroke-[1.5]" /> : <Moon className="w-3.5 h-3.5 stroke-[1.5]" />}
@@ -158,7 +158,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Quick mobile audio toggle */}
             <button
               onClick={toggleAudio}
-              className={`p-2 border rounded-none cursor-pointer flex items-center justify-center transition-all duration-300 ${
+              className={`p-2 border rounded-none cursor-pointer flex items-center justify-center transition-[background-color,border-color,color] duration-300 ${
                 activeTrackId ? "bg-saffron/15 border-saffron text-saffron" : "border-saffron/25 text-text-dim"
               }`}
             >
@@ -178,7 +178,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="lg:hidden border-t border-saffron/20 bg-bg-nav/95 backdrop-blur-md transition-all duration-300">
+        <div className="lg:hidden border-t border-saffron/20 bg-bg-nav/95 backdrop-blur-md transition-[background-color,border-color] duration-300">
           <div className="px-2 pt-2 pb-6 space-y-1 sm:px-3 text-center">
             {tabs.map((tab) => {
               const isActive = activeTab === tab.id;

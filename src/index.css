@@ -2,78 +2,99 @@
 @import "tailwindcss";
 
 :root {
-  /* Core Variables */
-  --bg-primary: #0A0A0A;
-  --bg-card: rgba(245, 240, 232, 0.08); /* Dark mode card background */
-  --text-body: #F5F0E8;
-  --text-heading: #F5F0E8;
-  --accent: #E8581A;
-  --grid-color: rgba(0, 0, 0, 0.4);
+  --bg: #0A0A0A;
+  --bg-card: rgba(245,240,232,0.08);
+  --text: #F5F0E8;
+  --text-muted: rgba(245,240,232,0.5);
+  --saffron: #E8581A;
+  --grid: rgba(0,0,0,0.4);
+
+  /* Compatibility mappings */
+  --bg-primary: var(--bg);
+  --text-body: var(--text);
+  --text-heading: var(--text);
+  --accent: var(--saffron);
+  --grid-color: var(--grid);
   --texture-opacity: 0.04;
   --img-brightness: 0.88;
 
   /* Theme mappings for compatibility */
   --bg-app: var(--bg-primary);
   --bg-nav: var(--bg-primary);
-  --bg-card-hover: rgba(245, 240, 232, 0.14);
-  --bg-card-inset: rgba(245, 240, 232, 0.04);
+  --bg-card-hover: color-mix(in srgb, var(--text) 14%, transparent);
+  --bg-card-inset: color-mix(in srgb, var(--text) 4%, transparent);
   --text-main: var(--text-heading);
   --text-dim: var(--text-body);
 
   /* Texture scales */
-  --weaver-1: rgba(245, 240, 232, 0.024);
-  --weaver-2: rgba(245, 240, 232, 0.016);
-  --weaver-3: rgba(245, 240, 232, 0.008);
+  --weaver-1: color-mix(in srgb, var(--text) 2.4%, transparent);
+  --weaver-2: color-mix(in srgb, var(--text) 1.6%, transparent);
+  --weaver-3: color-mix(in srgb, var(--text) 0.8%, transparent);
 
   /* Lines and accents */
-  --border-color: rgba(232, 88, 26, 0.15);
-  --border-color-strong: rgba(232, 88, 26, 0.35);
+  --border-color: color-mix(in srgb, var(--saffron) 15%, transparent);
+  --border-color-strong: color-mix(in srgb, var(--saffron) 35%, transparent);
   --scroll-track: var(--bg-primary);
-  --scroll-thumb: rgba(232, 88, 26, 0.44);
+  --scroll-thumb: color-mix(in srgb, var(--saffron) 44%, transparent);
   --scroll-thumb-hover: var(--accent);
   
-  --card-glow: rgba(232, 88, 26, 0.03);
-  --radial-end: rgba(10, 10, 10, 0.93);
-  --grid-line-color: rgba(232, 88, 26, 0.035);
-
-  /* Performance-optimized transition on root element only */
-  transition: background-color 0.3s ease, color 0.3s ease;
+  --card-glow: color-mix(in srgb, var(--saffron) 3%, transparent);
+  --radial-end: color-mix(in srgb, var(--bg) 93%, transparent);
+  --grid-line-color: color-mix(in srgb, var(--saffron) 3.5%, transparent);
+  --shadow-saffron-35: color-mix(in srgb, var(--saffron) 35%, transparent);
+  --shadow-saffron-50: color-mix(in srgb, var(--saffron) 50%, transparent);
+  --print-bg: #ffffff;
+  --print-text: #1a1a1a;
+  --print-heading: #000000;
+  --print-accent: #c2410c;
+  --print-link: #1a0dab;
+  --print-muted: #4a5568;
+  --print-border: #cbd5e1;
+  --print-card: #f8fafc;
+  --print-card-border: #e2e8f0;
 }
 
-:root.light {
-  /* Core Variables */
-  --bg-primary: #F5F0E8; /* ivory */
-  --bg-card: #E8E0D0; /* ivory card shape background */
-  --text-body: #1A1A1A;
-  --text-heading: #0A0A0A;
-  --accent: #E8581A;
-  --grid-color: rgba(10, 10, 10, 0.15);
+[data-theme="light"] {
+  --bg: #F5F0E8;
+  --bg-card: rgba(10,10,10,0.06);
+  --text: #0A0A0A;
+  --text-muted: rgba(10,10,10,0.5);
+  --saffron: #E8581A;
+  --grid: rgba(10,10,10,0.15);
+
+  --bg-primary: var(--bg);
+  --text-body: var(--text);
+  --text-heading: var(--text);
+  --accent: var(--saffron);
+  --grid-color: var(--grid);
   --texture-opacity: 0.06;
   --img-brightness: 1.0;
 
   /* Theme mappings for compatibility */
   --bg-app: var(--bg-primary);
   --bg-nav: var(--bg-primary);
-  --bg-card-hover: rgba(26, 26, 26, 0.09);
-  --bg-card-inset: rgba(26, 26, 26, 0.04);
+  --bg-card-hover: color-mix(in srgb, var(--text) 9%, transparent);
+  --bg-card-inset: color-mix(in srgb, var(--text) 4%, transparent);
   --text-main: var(--text-heading);
   --text-dim: var(--text-body);
 
   /* Texture scales */
-  --weaver-1: rgba(26, 26, 26, 0.036);
-  --weaver-2: rgba(26, 26, 26, 0.024);
-  --weaver-3: rgba(26, 26, 26, 0.012);
+  --weaver-1: color-mix(in srgb, var(--text) 3.6%, transparent);
+  --weaver-2: color-mix(in srgb, var(--text) 2.4%, transparent);
+  --weaver-3: color-mix(in srgb, var(--text) 1.2%, transparent);
 
   /* Lines and accents */
-  --border-color: rgba(232, 88, 26, 0.22);
-  --border-color-strong: rgba(232, 88, 26, 0.5);
+  --border-color: color-mix(in srgb, var(--saffron) 22%, transparent);
+  --border-color-strong: color-mix(in srgb, var(--saffron) 50%, transparent);
   --scroll-track: var(--bg-primary);
-  --scroll-thumb: rgba(232, 88, 26, 0.5);
+  --scroll-thumb: color-mix(in srgb, var(--saffron) 50%, transparent);
   --scroll-thumb-hover: var(--accent);
 
-  --card-glow: rgba(232, 88, 26, 0.015);
-  --radial-end: rgba(245, 240, 232, 0.93);
-  --grid-line-color: rgba(232, 88, 26, 0.035);
+  --card-glow: color-mix(in srgb, var(--saffron) 1.5%, transparent);
+  --radial-end: color-mix(in srgb, var(--bg) 93%, transparent);
+  --grid-line-color: color-mix(in srgb, var(--saffron) 3.5%, transparent);
+  --shadow-saffron-35: color-mix(in srgb, var(--saffron) 35%, transparent);
+  --shadow-saffron-50: color-mix(in srgb, var(--saffron) 50%, transparent);
 }
 
 @theme {
@@ -96,33 +117,30 @@
   --color-border-theme-strong: var(--border-color-strong);
 }
 
+html {
+  background-color: var(--bg-app);
+  color: var(--text-main);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
 /* Custom global overrides */
-html, body {
+body {
   background-color: var(--bg-app);
   color: var(--text-main);
   font-family: "DM Sans", sans-serif;
   margin: 0;
   padding: 0;
   overflow-x: hidden;
-  /* NO transition here to avoid jank/lag. transition is managed solely by :root, navbar and cards */
 
   /* Diagonal & orthogonal thread khadi weave texture overlay */
   background-image:
     linear-gradient(45deg, var(--weaver-1) 1px, transparent 1px),
     linear-gradient(-45deg, var(--weaver-2) 1px, transparent 1px),
     linear-gradient(90deg, var(--weaver-3) 1px, transparent 1px),
-    linear-gradient(0deg, var(--weaver-3) 1px, transparent 1px);
-  background-size: 6px 6px, 6px 6px, 12px 12px, 12px 12px;
-}
-
-.bg-khadi-weave {
-  background-color: var(--bg-app);
-  background-image:
-    linear-gradient(45deg, var(--weaver-1) 1px, transparent 1px),
-    linear-gradient(-45deg, var(--weaver-2) 1px, transparent 1px),
-    linear-gradient(90deg, var(--weaver-3) 1px, transparent 1px),
-    linear-gradient(0deg, var(--weaver-3) 1px, transparent 1px);
-  background-size: 6px 6px, 6px 6px, 12px 12px, 12px 12px;
+    linear-gradient(0deg, var(--weaver-3) 1px, transparent 1px),
+    linear-gradient(var(--grid-line-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line-color) 1px, transparent 1px);
+  background-size: 6px 6px, 6px 6px, 12px 12px, 12px 12px, 60px 60px, 60px 60px;
 }
 
 /* Custom scrollbars matching the active theme */
@@ -140,26 +158,6 @@ html, body {
   background: var(--scroll-thumb-hover);
 }
 
-@keyframes slow-pan {
-  0% {
-    background-position: 0px 0px;
-  }
-  100% {
-    background-position: 60px 60px;
-  }
-}
-
-.animate-slow-pan {
-  animation: slow-pan 45s linear infinite;
-}
-
-.bg-grid-faint {
-  background-image: 
-    linear-gradient(var(--grid-line-color) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid-line-color) 1px, transparent 1px);
-  background-size: 60px 60px;
-}
-
 /* Custom Cursor styling targeting pointer-fine viewports */
 @media (pointer: fine) {
   html, body, a, button, [role="button"], .cursor-pointer {
@@ -169,7 +167,6 @@ html, body {
 
 img {
   filter: brightness(var(--img-brightness, 1));
-  transition: filter 0.3s ease;
 }
 
 /* Portrait ink dissolve image switching & styling */
@@ -180,16 +177,22 @@ img {
 
 .img-dark {
   display: block;
+  opacity: 0.9;
 }
 .img-light {
   display: none !important;
+  opacity: 0.9;
 }
 
-:root.light .img-dark {
+[data-theme="light"] .custom-cursor {
+  mix-blend-mode: multiply;
+}
+
+[data-theme="light"] .img-dark {
   display: none !important;
 }
-:root.light .img-light {
-  display: block;
+[data-theme="light"] .img-light {
+  display: block !important;
 }
 
 /* Print styles for elegant PDF generation */
@@ -200,8 +203,8 @@ img {
   }
   
   body, html {
-    background: #ffffff !important;
-    color: #1a1a1a !important;
+    background: var(--print-bg) !important;
+    color: var(--print-text) !important;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
@@ -224,7 +227,7 @@ img {
     top: 0 !important;
     width: 100% !important;
     height: auto !important;
-    background: #ffffff !important;
+    background: var(--print-bg) !important;
     backdrop-filter: none !important;
     padding: 0 !important;
     margin: 0 !important;
@@ -236,7 +239,7 @@ img {
   .fixed:has(.print-cv-sheet) > div {
     border: none !important;
     box-shadow: none !important;
-    background: #ffffff !important;
+    background: var(--print-bg) !important;
     margin: 0 !important;
     padding: 0 !important;
     max-width: 100% !important;
@@ -245,8 +248,8 @@ img {
 
   /* Clean resume layout container for paper printing with A4 width standards */
   .print-cv-sheet {
-    background: #ffffff !important;
-    color: #2d3748 !important;
+    background: var(--print-bg) !important;
+    color: var(--print-muted) !important;
     width: 100% !important;
     padding: 0 !important;
     font-size: 13px !important;
@@ -260,19 +263,19 @@ img {
   .print-cv-sheet h4,
   .print-cv-sheet h5,
   .print-cv-sheet h6 {
-    color: #000000 !important;
+    color: var(--print-heading) !important;
     font-weight: bold !important;
   }
 
   /* Elegant coloring on section headers and sub-headers */
   .print-cv-sheet span[class*="text-saffron"],
   .print-cv-sheet h3[class*="text-saffron"] {
-    color: #c2410c !important; /* Premium deep rust color for clean gray-scale readability */
+    color: var(--print-accent) !important; /* Premium deep rust color for clean gray-scale readability */
   }
 
   /* Force links to have high contrast print-blue color and permanent underline so they are clickable */
   .print-cv-sheet a {
-    color: #1a0dab !important;
+    color: var(--print-link) !important;
     text-decoration: underline !important;
     font-weight: 600 !important;
   }
@@ -286,17 +289,16 @@ img {
 
   /* Subtitle text styles */
   .print-cv-sheet .text-text-dim {
-    color: #4a5568 !important;
+    color: var(--print-muted) !important;
   }
 
   /* Bento boxes borders & bg print adjustments */
   .print-cv-sheet [class*="border-saffron"] {
-    border-color: #cbd5e1 !important;
+    border-color: var(--print-border) !important;
   }
 
   .print-cv-sheet .bg-bg-card-inset {
-    background-color: #f8fafc !important;
-    border: 1px solid #e2e8f0 !important;
+    background-color: var(--print-card) !important;
+    border: 1px solid var(--print-card-border) !important;
   }
 }
-

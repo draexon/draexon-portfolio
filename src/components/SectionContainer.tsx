@@ -5,8 +5,6 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { motion } from "motion/react";
-import { globalAudio } from "./AudioEngine";
-import { Visualizer } from "./Visualizer";
 
 export const staggerContainerVariants = {
   hidden: { 
@@ -57,8 +55,6 @@ export const SectionContainer: React.FC<SectionContainerProps> = ({
   customPadding = "py-12 md:py-20 px-5 sm:px-8 md:px-16 lg:px-24", // Adjusted to ensure content sits beautifully inside the layered loom curves
   justify = "start",
 }) => {
-  const [audioPlaying, setAudioPlaying] = useState<boolean>(false);
-  const [activeTrackId, setActiveTrackId] = useState<string | null>(null);
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const sectionRef = useRef<HTMLElement>(null);
 
@@ -87,18 +83,6 @@ export const SectionContainer: React.FC<SectionContainerProps> = ({
     };
   }, []);
 
-  // Synchronize state periodically with global audio engine parameters
-  useEffect(() => {
-    const handleSync = setInterval(() => {
-      setAudioPlaying(globalAudio.isPlaying());
-      setActiveTrackId(globalAudio.getActiveTrack());
-    }, 250);
-
-    return () => {
-      clearInterval(handleSync);
-    };
-  }, []);
-
   const justifyClass = 
     justify === "between" 
       ? "justify-between" 
@@ -110,35 +94,23 @@ export const SectionContainer: React.FC<SectionContainerProps> = ({
     <section 
       ref={sectionRef}
       id={id}
-      className={`w-full bg-bg-app text-text-main min-h-[calc(100vh-80px)] flex flex-col ${justifyClass} relative overflow-hidden ${wrapperClassName} transition-colors duration-300`}
+      className={`w-full bg-transparent text-text-main min-h-[calc(100vh-80px)] flex flex-col ${justifyClass} relative overflow-hidden ${wrapperClassName}`}
     >
-      {/* Background Subtle Moving Grid Cross Lines (Low pacing) */}
-      <div className="absolute inset-0 bg-grid-faint animate-slow-pan pointer-events-none select-none z-0" />
-
-      {/* Main Wavy Grid Background Visualizer (Waving curves across every page) */}
-      <div className="absolute inset-0 opacity-[0.25] pointer-events-none select-none z-0">
-        <Visualizer 
-          isPlaying={audioPlaying} 
-          activeTrackId={activeTrackId} 
-          className="bg-transparent border-none"
-        />
-      </div>
-
       {/* Radial shade effect to ensure highest contrast in readable areas */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_40%,var(--radial-end)_95%)] pointer-events-none select-none z-0 transition-all duration-300" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_40%,var(--radial-end)_95%)] pointer-events-none select-none z-0" />
 
       {/* Dynamic Handloom Wavy Frame Borders Overlay (Z-Index 20) */}
       <div className="absolute inset-0 w-full h-full z-20 pointer-events-none select-none">
         <svg className="w-full h-full" viewBox="0 0 1000 1000" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <pattern id="khadi-pattern-stencil" width="12" height="12" patternUnits="userSpaceOnUse">
-              <rect width="12" height="12" fill="var(--bg-app)" className="transition-colors duration-300" />
+              <rect width="12" height="12" fill="var(--bg-app)" />
               {/* Diagonal threads */}
-              <path d="M0 12 L12 0 M0 6 L6 0 M6 12 L12 6" stroke="var(--weaver-1)" strokeWidth="0.75" fill="none" className="transition-colors duration-300" />
-              <path d="M0 0 L12 12 M0 6 L6 12 M6 0 L12 6" stroke="var(--weaver-2)" strokeWidth="0.75" fill="none" className="transition-colors duration-300" />
+              <path d="M0 12 L12 0 M0 6 L6 0 M6 12 L12 6" stroke="var(--weaver-1)" strokeWidth="0.75" fill="none" />
+              <path d="M0 0 L12 12 M0 6 L6 12 M6 0 L12 6" stroke="var(--weaver-2)" strokeWidth="0.75" fill="none" />
               {/* Web warp and weft lines */}
-              <line x1="0" y1="6" x2="12" y2="6" stroke="var(--weaver-3)" strokeWidth="0.5" className="transition-colors duration-300" />
-              <line x1="6" y1="0" x2="6" y2="12" stroke="var(--weaver-3)" strokeWidth="0.5" className="transition-colors duration-300" />
+              <line x1="0" y1="6" x2="12" y2="6" stroke="var(--weaver-3)" strokeWidth="0.5" />
+              <line x1="6" y1="0" x2="6" y2="12" stroke="var(--weaver-3)" strokeWidth="0.5" />
             </pattern>
           </defs>
 
@@ -156,7 +128,6 @@ export const SectionContainer: React.FC<SectionContainerProps> = ({
             stroke="var(--border-color-strong)" 
             strokeWidth="2.5" 
             strokeOpacity="1.0"
-            className="transition-colors duration-300"
           />
 
           {/* Inner wave: same outline, 40% opacity, offset 20px inward from outer */}
@@ -166,13 +137,12 @@ export const SectionContainer: React.FC<SectionContainerProps> = ({
             stroke="var(--border-color)" 
             strokeWidth="1.5" 
             strokeOpacity="0.4"
-            className="transition-colors duration-300"
           />
         </svg>
       </div>
 
       <motion.div 
-        className={`w-full max-w-7xl mx-auto ${customPadding} flex flex-col ${justifyClass} flex-grow relative z-10 ${className} transition-all duration-[1100ms] ease-[cubic-bezier(0.16,1,0.3,1)] transform ${
+        className={`w-full max-w-7xl mx-auto ${customPadding} flex flex-col ${justifyClass} flex-grow relative z-10 ${className} transition-[opacity,transform] duration-[1100ms] ease-[cubic-bezier(0.16,1,0.3,1)] transform ${
           isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
         }`}
         initial="hidden"

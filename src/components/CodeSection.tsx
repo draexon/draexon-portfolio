@@ -3,12 +3,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { GitBranch, Star, Terminal, GitCommit, Code2, Layers } from "lucide-react";
 import { SectionContainer, fadeInUpVariants } from "./SectionContainer";
 
 export const CodeSection: React.FC = () => {
+  const githubUsername = import.meta.env.VITE_GITHUB_USERNAME;
+  const [githubStats, setGithubStats] = useState<{ publicRepos: number | null; status: "idle" | "loading" | "loaded" | "error" }>({
+    publicRepos: null,
+    status: "idle",
+  });
+
   // Languages structure (Saffron bars)
   const languages = [
     { name: "TypeScript / Node.js", pct: 95 },
@@ -55,6 +61,43 @@ export const CodeSection: React.FC = () => {
   });
 
   const [hoveredDay, setHoveredDay] = useState<{ date: string; commits: string } | null>(null);
+
+  useEffect(() => {
+    if (!githubUsername) return;
+
+    let isMounted = true;
+    setGithubStats((prev) => ({ ...prev, status: "loading" }));
+
+    fetch(`https://api.github.com/users/${githubUsername}`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("GitHub profile request failed.");
+        }
+        return response.json();
+      })
+      .then((data: { public_repos?: number }) => {
+        if (!isMounted) return;
+        setGithubStats({
+          publicRepos: typeof data.public_repos === "number" ? data.public_repos : null,
+          status: "loaded",
+        });
+      })
+      .catch(() => {
+        if (!isMounted) return;
+        setGithubStats({ publicRepos: null, status: "error" });
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [githubUsername]);
+
+  const repoCountLabel =
+    githubStats.publicRepos !== null
+      ? `${githubStats.publicRepos} repos`
+      : githubStats.status === "loading"
+        ? "Loading"
+        : "Unavailable";
 
   return (
     <SectionContainer id="code" className="space-y-12">
@@ -130,14 +173,14 @@ export const CodeSection: React.FC = () => {
                         key={d.id}
                         onMouseEnter={() => setHoveredDay({ date: d.date, commits: d.commits })}
                         onMouseLeave={() => setHoveredDay(null)}
-                        className="w-[10px] h-[10px] rounded-none transition-all duration-150 cursor-crosshair hover:ring-1 hover:ring-saffron hover:scale-110"
+                        className="w-[10px] h-[10px] rounded-none transition-[transform,box-shadow] duration-150 cursor-crosshair hover:ring-1 hover:ring-saffron hover:scale-110"
                         style={{
                           backgroundColor:
                             d.level === 0 ? "var(--bg-card-hover)" :
-                            d.level === 1 ? "rgba(232, 88, 26, 0.2)" :
-                            d.level === 2 ? "rgba(232, 88, 26, 0.45)" :
-                            d.level === 3 ? "rgba(232, 88, 26, 0.7)" :
-                            d.level === 4 ? "#E8581A" : "var(--bg-card-hover)"
+                            d.level === 1 ? "color-mix(in srgb, var(--saffron) 20%, transparent)" :
+                            d.level === 2 ? "color-mix(in srgb, var(--saffron) 45%, transparent)" :
+                            d.level === 3 ? "color-mix(in srgb, var(--saffron) 70%, transparent)" :
+                            d.level === 4 ? "var(--saffron)" : "var(--bg-card-hover)"
                         }}
                       />
                     ))}
@@ -152,10 +195,10 @@ export const CodeSection: React.FC = () => {
         <div className="flex items-center space-x-2 text-[10px] font-mono text-text-dim/50 self-end pt-1">
           <span>Less</span>
           <span className="w-2.5 h-2.5 bg-bg-card-hover border border-saffron/10" />
-          <span className="w-2.5 h-2.5 bg-[#E8581A]/20" />
-          <span className="w-2.5 h-2.5 bg-[#E8581A]/45" />
-          <span className="w-2.5 h-2.5 bg-[#E8581A]/70" />
-          <span className="w-2.5 h-2.5 bg-[#E8581A]" />
+          <span className="w-2.5 h-2.5 bg-[color-mix(in_srgb,var(--saffron)_20%,transparent)]" />
+          <span className="w-2.5 h-2.5 bg-[color-mix(in_srgb,var(--saffron)_45%,transparent)]" />
+          <span className="w-2.5 h-2.5 bg-[color-mix(in_srgb,var(--saffron)_70%,transparent)]" />
+          <span className="w-2.5 h-2.5 bg-saffron" />
           <span>More</span>
         </div>
       </motion.div>
@@ -217,7 +260,7 @@ export const CodeSection: React.FC = () => {
         className="border border-saffron/20 bg-bg-card px-6 py-4 grid grid-cols-3 gap-4 items-center text-center divide-x divide-saffron/15 font-mono text-xs sm:text-sm transition-colors duration-300"
       >
         <div className="flex flex-col py-1">
-          <span className="text-saffron font-bold text-base sm:text-lg">114 repos</span>
+          <span className="text-saffron font-bold text-base sm:text-lg">{repoCountLabel}</span>
           <span className="text-[9px] text-text-dim/50 uppercase tracking-wider mt-0.5">Active Repositories</span>
         </div>
         <div className="flex flex-col py-1">
@@ -225,7 +268,7 @@ export const CodeSection: React.FC = () => {
           <span className="text-[9px] text-text-dim/50 uppercase tracking-wider mt-0.5">Total Commits (2026)</span>
         </div>
         <div className="flex flex-col py-1">
-          <span className="text-saffron font-bold text-base sm:text-lg">TypeScript</span>
+          <span className="text-saffron font-bold text-base sm:text-lg">GitHub</span>
           <span className="text-[9px] text-text-dim/50 uppercase tracking-wider mt-0.5">Top Language</span>
         </div>
       </motion.div>

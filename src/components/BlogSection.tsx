@@ -59,7 +59,7 @@ export const BlogSection: React.FC = () => {
             exit={{ opacity: 0, y: -10 }}
             className="py-12 md:py-20 flex flex-col justify-center items-center w-full"
           >
-            <div className="w-full max-w-2xl border border-saffron/15 bg-bg-card hover:border-saffron/35 transition-all duration-300 p-8 sm:p-12 space-y-6">
+            <div className="w-full max-w-2xl border border-saffron/15 bg-bg-card hover:border-saffron/35 transition-[border-color] duration-300 p-8 sm:p-12 space-y-6">
               
               {/* Card Meta Tag */}
               <div className="flex items-center space-x-3 text-[10px] font-mono text-text-dim/50 uppercase tracking-widest leading-none">
@@ -178,7 +178,7 @@ export const BlogSection: React.FC = () => {
             </div>
 
             {/* Bottom tools container */}
-            <div className="border-t border-saffron/15 pt-8 flex flex-col sm:flex-row gap-4 sm:justify-between sm:items-center text-xs font-mono text-[#F5F0E8]/40">
+            <div className="border-t border-saffron/15 pt-8 flex flex-col sm:flex-row gap-4 sm:justify-between sm:items-center text-xs font-mono text-text-dim/40">
               <span className="flex items-center space-x-1">
                 <CornerDownRight className="w-4 h-4 text-saffron" />
                 <span>ESSAY REFERENCE DEPLOYED // NO EXTERNAL REDIRECT</span>
@@ -186,7 +186,7 @@ export const BlogSection: React.FC = () => {
               
               <button
                 onClick={handleShare}
-                className="flex items-center space-x-1.5 text-saffron hover:text-[#F5F0E8] font-bold tracking-wider cursor-pointer font-bold pb-1"
+                className="flex items-center space-x-1.5 text-saffron hover:text-text-main font-bold tracking-wider cursor-pointer font-bold pb-1"
               >
                 <Share2 className="w-3.5 h-3.5" />
                 <span>{justCopied ? "LINK COPIED SUCCESS" : "SHARE DIRECT LINK"}</span>
