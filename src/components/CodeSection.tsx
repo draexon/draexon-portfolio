@@ -7,6 +7,7 @@ import React, { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { GitBranch, Star, Terminal, GitCommit, Code2, Layers } from "lucide-react";
 import { SectionContainer, fadeInUpVariants } from "./SectionContainer";
+import { CornerBrackets } from "./CornerBrackets";
 
 type LanguageStat = {
   name: string;
@@ -289,7 +290,7 @@ export const CodeSection: React.FC = () => {
   const displayedLanguages = wakaLanguages.length > 0 ? wakaLanguages : languages;
 
   return (
-    <SectionContainer id="code" className="space-y-12">
+    <SectionContainer id="code" className="space-y-20 md:space-y-28">
       
       {/* Editorial Header */}
       <motion.div 
@@ -308,9 +309,10 @@ export const CodeSection: React.FC = () => {
       {/* GitHub Contribution Graph Full Width */}
       <motion.div 
         variants={fadeInUpVariants}
-        className="border border-saffron/20 bg-bg-card p-5 sm:p-6 flex flex-col space-y-4 transition-colors duration-300"
+        className="group relative overflow-visible flex flex-col space-y-8 px-6 py-8 md:px-10 md:py-10 bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-500 ease-in-out"
       >
-        <div className="flex justify-between items-center flex-wrap gap-4 border-b border-saffron/10 pb-4">
+        <CornerBrackets />
+        <div className="flex justify-between items-end flex-wrap gap-8">
           <div>
             <h3 className="font-serif italic text-base sm:text-lg text-text-main font-bold">Contribution Cadence</h3>
             <p className="text-[11px] text-text-dim/50 font-sans mt-0.5">
@@ -318,7 +320,7 @@ export const CodeSection: React.FC = () => {
             </p>
           </div>
           {/* Tooltip display */}
-          <div className="min-h-[28px] px-3 py-1 bg-saffron/5 border border-saffron/10 font-mono text-[10px] text-saffron flex items-center select-none font-bold">
+          <div className="min-h-[28px] font-mono text-[10px] text-saffron flex items-center select-none font-bold">
             {hoveredDay ? (
               <span>{hoveredDay.date}: {hoveredDay.commits} commits</span>
             ) : (
@@ -395,11 +397,12 @@ export const CodeSection: React.FC = () => {
       {/* Two columns below contribution graph */}
       <motion.div 
         variants={fadeInUpVariants}
-        className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch pt-2"
+        className="grid grid-cols-2 gap-0 items-stretch"
       >
         
         {/* Left Column: Languages */}
-        <div className="border border-saffron/20 bg-bg-card p-6 sm:p-8 flex flex-col justify-between space-y-6 transition-colors duration-300">
+        <div className="group relative overflow-visible flex min-h-[280px] flex-col justify-between space-y-10 px-6 py-8 md:px-8 md:py-10 bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-500 ease-in-out">
+          <CornerBrackets />
           <div>
             <h3 className="font-serif italic text-xl text-saffron font-bold">Languages</h3>
             <p className="text-xs text-text-dim/60 font-sans mt-1">
@@ -428,7 +431,8 @@ export const CodeSection: React.FC = () => {
         </div>
 
         {/* Right Column: VS Code Time */}
-        <div className="border border-saffron/20 bg-bg-card p-6 sm:p-8 flex flex-col justify-between h-full min-h-[220px] transition-colors duration-300">
+        <div className="group relative overflow-visible flex min-h-[280px] flex-col justify-between px-6 py-8 md:px-8 md:py-10 bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-500 ease-in-out">
+          <CornerBrackets />
           <div>
             <h3 className="font-serif italic text-xl text-text-main font-bold">VS Code this week</h3>
             <p className="text-xs text-text-dim/60 font-sans mt-1">
@@ -438,7 +442,7 @@ export const CodeSection: React.FC = () => {
           
           <div className="pt-4 pb-2">
             <span className="text-5xl sm:text-6xl font-serif font-black tracking-tight text-saffron block">
-              {isWakaTimeLoading ? "Loading" : wakaHours ?? "48.2 hrs"}
+              {isWakaTimeLoading ? "..." : wakaHours ?? "48.2 hrs"}
             </span>
             <span className="text-[10px] font-mono text-text-dim/50 uppercase tracking-widest block mt-2">
               // WAKATIME LAST 7 DAYS // {wakaHours ? "LIVE TELEMETRY" : "FALLBACK ACTIVE"}
@@ -451,22 +455,26 @@ export const CodeSection: React.FC = () => {
       {/* GitHub Summary Row */}
       <motion.div 
         variants={fadeInUpVariants}
-        className="border border-saffron/20 bg-bg-card px-6 py-4 grid grid-cols-2 md:grid-cols-4 gap-4 items-center text-center font-mono text-xs sm:text-sm transition-colors duration-300"
+        className="grid grid-cols-4 gap-0 items-start font-mono text-xs sm:text-sm"
       >
-        <div className="flex flex-col py-1">
-          <span className="text-saffron font-bold text-base sm:text-lg">{githubStats.repos}</span>
+        <div className="group relative overflow-visible flex h-[160px] flex-col gap-3 px-6 py-8 bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-500 ease-in-out">
+          <CornerBrackets />
+          <span className="text-saffron font-serif font-bold text-4xl lg:text-5xl">{githubStats.repos}</span>
           <span className="text-[9px] text-text-dim/50 uppercase tracking-wider mt-0.5">Active Repositories</span>
         </div>
-        <div className="flex flex-col py-1">
-          <span className="text-text-main font-bold text-base sm:text-lg">{githubStats.commits}</span>
+        <div className="group relative overflow-visible flex h-[160px] flex-col gap-3 px-6 py-8 bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-500 ease-in-out">
+          <CornerBrackets />
+          <span className="text-saffron font-serif font-bold text-4xl lg:text-5xl">{githubStats.commits}</span>
           <span className="text-[9px] text-text-dim/50 uppercase tracking-wider mt-0.5">Total Commits</span>
         </div>
-        <div className="flex flex-col py-1">
-          <span className="text-saffron font-bold text-base sm:text-lg">{githubStats.topLanguage}</span>
+        <div className="group relative overflow-visible flex h-[160px] flex-col gap-3 px-6 py-8 bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-500 ease-in-out">
+          <CornerBrackets />
+          <span className="text-saffron font-serif font-bold text-3xl lg:text-4xl">{githubStats.topLanguage}</span>
           <span className="text-[9px] text-text-dim/50 uppercase tracking-wider mt-0.5">Top Language</span>
         </div>
-        <div className="flex flex-col py-1">
-          <span className="text-text-main font-bold text-base sm:text-lg">{githubStats.stars}</span>
+        <div className="group relative overflow-visible flex h-[160px] flex-col gap-3 px-6 py-8 bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-500 ease-in-out">
+          <CornerBrackets />
+          <span className="text-saffron font-serif font-bold text-4xl lg:text-5xl">{githubStats.stars}</span>
           <span className="text-[9px] text-text-dim/50 uppercase tracking-wider mt-0.5">Total Stars Earned</span>
         </div>
       </motion.div>

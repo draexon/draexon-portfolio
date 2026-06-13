@@ -4,10 +4,11 @@
  */
 
 import React, { useState } from "react";
-import { ArrowRight, Filter } from "lucide-react";
-import { motion, AnimatePresence } from "motion/react";
+import { ArrowRight } from "lucide-react";
+import { motion } from "motion/react";
 import { WorkItem } from "../types";
 import { SectionContainer, fadeInUpVariants } from "./SectionContainer";
+import { CornerBrackets } from "./CornerBrackets";
 
 interface WorkSectionProps {
   setActiveTab: (tab: string) => void;
@@ -27,7 +28,7 @@ export const WorkSection: React.FC<WorkSectionProps> = ({ setActiveTab }) => {
       year: "2026",
       tools: ["After Effects", "Premiere Pro", "DaVinci Resolve"],
       stat: "4.2M views",
-      role: "VFX & Editing"
+      role: "VFX & Editing",
     },
     {
       id: "transient-echoes",
@@ -39,7 +40,7 @@ export const WorkSection: React.FC<WorkSectionProps> = ({ setActiveTab }) => {
       year: "2025",
       tools: ["Eurorack", "Web Audio API", "Logic Pro"],
       stat: "3.4M Streams",
-      role: "Sound Design"
+      role: "Sound Design",
     },
     {
       id: "aether-engine",
@@ -51,7 +52,7 @@ export const WorkSection: React.FC<WorkSectionProps> = ({ setActiveTab }) => {
       year: "2026",
       tools: ["TypeScript", "Rust", "WebAssembly", "D3.js"],
       stat: "4.8k Stars",
-      role: "Lead Engineer"
+      role: "Lead Engineer",
     },
     {
       id: "weavers-rhythm",
@@ -63,7 +64,7 @@ export const WorkSection: React.FC<WorkSectionProps> = ({ setActiveTab }) => {
       year: "2026",
       tools: ["Premiere Pro", "Blender", "RED Cine-X"],
       stat: "1.2M views",
-      role: "Director / Editor"
+      role: "Director / Editor",
     },
     {
       id: "varanasi-market",
@@ -75,7 +76,7 @@ export const WorkSection: React.FC<WorkSectionProps> = ({ setActiveTab }) => {
       year: "2026",
       tools: ["Ableton Live", "Analog Synthesizers", "Field Recorder"],
       stat: "5.1M Streams",
-      role: "Composer"
+      role: "Composer",
     },
     {
       id: "genesis-component",
@@ -87,30 +88,23 @@ export const WorkSection: React.FC<WorkSectionProps> = ({ setActiveTab }) => {
       year: "2025",
       tools: ["React", "Tailwind CSS", "TypeScript"],
       stat: "12.8k downloads",
-      role: "Author"
+      role: "Author",
     },
   ];
 
-  const filteredWorks = filter === "ALL" ? works : works.filter((w) => w.category === filter);
+  const filteredWorks = filter === "ALL" ? works : works.filter((work) => work.category === filter);
 
-  // Cross-route navigate when clicked!
   const handleWorkClick = (item: WorkItem) => {
-    if (item.category === "EDITS") {
-      setActiveTab("edits");
-    } else if (item.category === "MUSIC") {
-      setActiveTab("music");
-    } else if (item.category === "CODE") {
-      setActiveTab("code");
-    }
+    if (item.category === "EDITS") setActiveTab("edits");
+    if (item.category === "MUSIC") setActiveTab("music");
+    if (item.category === "CODE") setActiveTab("code");
   };
 
   return (
     <SectionContainer id="work">
-      
-      {/* Editorial Header */}
-      <motion.div 
+      <motion.div
         variants={fadeInUpVariants}
-        className="md:flex md:items-end md:justify-between border-b border-saffron/20 pb-10 mb-12"
+        className="md:flex md:items-end md:justify-between border-b border-saffron/20 pb-10 mb-16"
       >
         <div className="max-w-2xl text-left">
           <p className="font-mono text-[10px] sm:text-xs text-saffron tracking-[0.3em] uppercase mb-2 sm:mb-3 font-semibold">// CURATED PORTFOLIO</p>
@@ -118,164 +112,58 @@ export const WorkSection: React.FC<WorkSectionProps> = ({ setActiveTab }) => {
             Selected <span className="italic font-normal">Works.</span>
           </h2>
           <p className="mt-4 text-sm text-text-dim/70 leading-relaxed font-sans">
-            A curation of conceptual releases aligning motion synthesis, audio dynamics, and pristine codebase symmetry. 
-            Click any project card to access its interactive control console.
+            A curation of conceptual releases aligning motion synthesis, audio dynamics, and pristine codebase symmetry.
           </p>
         </div>
 
-        {/* Categories Tab Selector */}
-        <div className="flex flex-wrap gap-2 mt-8 md:mt-0 border border-saffron/10 p-1.5 bg-bg-card transition-colors duration-300">
-          {(["ALL", "EDITS", "MUSIC", "CODE"] as const).map((cat) => (
+        <div className="flex flex-wrap gap-6 mt-10 md:mt-0">
+          {(["ALL", "EDITS", "MUSIC", "CODE"] as const).map((category) => (
             <button
-              key={cat}
-              onClick={() => setFilter(cat)}
-              className={`px-5 py-2.5 text-[10px] tracking-[0.25em] font-mono font-bold transition-[background-color,color] duration-300 cursor-pointer ${
-                filter === cat
-                  ? "bg-saffron text-[var(--bg)]"
-                  : "text-text-dim/85 hover:text-saffron hover:bg-saffron/5"
+              key={category}
+              onClick={() => setFilter(category)}
+              className={`py-2 text-[10px] tracking-[0.25em] font-mono font-bold transition-colors cursor-pointer ${
+                filter === category ? "text-white" : "text-saffron hover:text-white"
               }`}
             >
-              {cat}
+              {category}
             </button>
           ))}
         </div>
       </motion.div>
 
-      {/* Grid of Portfolio Cards in Bento Layout */}
-      <motion.div
-        key={filter}
-        variants={fadeInUpVariants}
-        className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start"
-      >
-        {filteredWorks.length > 0 && (
-          <React.Fragment>
-            {/* PRIMARY FEATURE (7 columns) */}
-            <motion.div
-              layout
-              key={filteredWorks[0].id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.5 }}
-              onClick={() => handleWorkClick(filteredWorks[0])}
-              className="lg:col-span-7 group cursor-pointer border border-saffron/15 bg-bg-card hover:border-saffron/40 hover:bg-bg-card-hover transition-[background-color,border-color] duration-300 flex flex-col justify-between"
-            >
-              <div>
-                {/* Header Meta Line */}
-                <div className="flex justify-between items-center px-5 py-4 border-b border-saffron/10 bg-bg-card-inset font-mono text-[10px] text-text-dim/60 transition-colors duration-300">
-                  <span>// FEATURED FIELD</span>
-                  <span className="text-saffron tracking-wider font-bold">[{filteredWorks[0].category}]</span>
-                </div>
-
-                {/* Aspect-Locked Cover Image */}
-                <div className="relative aspect-video w-full overflow-hidden border-b border-saffron/10 bg-black/5">
-                  <img
-                    src={filteredWorks[0].thumbnail}
-                    alt={filteredWorks[0].title}
-                    referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-102 transition-[filter,transform] duration-500"
-                  />
-                  {/* Decorative corner lines framing the image like a high-end photography layout */}
-                  <div className="absolute top-2 left-2 w-2 h-[1px] bg-saffron/40" />
-                  <div className="absolute top-2 left-2 w-[1px] h-2 bg-saffron/40" />
-                  <div className="absolute bottom-2 right-2 w-2 h-[1px] bg-saffron/40" />
-                  <div className="absolute bottom-2 right-2 w-[1px] h-2 bg-saffron/40" />
-                </div>
-
-                {/* Body Content */}
-                <div className="p-8 space-y-4">
-                  <h3 className="text-2xl md:text-3xl font-serif font-extrabold group-hover:text-saffron transition-colors">
-                    {filteredWorks[0].title}
-                  </h3>
-                  <p className="text-sm text-text-dim leading-relaxed">
-                    {filteredWorks[0].subtitle}
-                  </p>
-                  <p className="text-xs text-text-dim/50 leading-relaxed italic border-t border-saffron/10 pt-4">
-                    {filteredWorks[0].description}
-                  </p>
-                </div>
+      <motion.div key={filter} variants={fadeInUpVariants} className="divide-y divide-white/[0.08]">
+        {filteredWorks.map((item, index) => (
+          <motion.button
+            layout
+            key={item.id}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: index * 0.04 }}
+            onClick={() => handleWorkClick(item)}
+            className="group relative overflow-visible w-full px-6 py-12 md:px-10 md:py-16 text-left cursor-pointer bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-500 ease-in-out"
+          >
+            <CornerBrackets />
+            <div className="flex flex-col lg:grid lg:grid-cols-12 gap-6 lg:gap-12 lg:items-end">
+              <div className="lg:col-span-3 font-mono text-[10px] tracking-[0.22em] uppercase text-saffron">
+                {item.category} / {item.year} / {item.role}
               </div>
-
-              {/* Card Footer (Tools and Stat callouts) */}
-              <div className="p-8 border-t border-saffron/10 bg-bg-card-inset flex flex-col space-y-4 transition-colors duration-300">
-                <div className="flex justify-between items-center text-[10px] font-mono">
-                  <span className="text-text-dim/40">CAPABILITY:</span>
-                  <span className="text-saffron font-bold uppercase">{filteredWorks[0].role}</span>
-                </div>
-                
-                <div className="flex flex-wrap gap-1.5">
-                  {filteredWorks[0].tools.map((t) => (
-                    <span key={t} className="text-[9px] font-mono font-medium px-2.5 py-1 bg-saffron/5 border border-saffron/10 text-saffron/80">
-                      {t}
-                    </span>
-                  ))}
-                </div>
-
-                <div className="flex justify-between items-center pt-3 border-t border-saffron/5 group-hover:text-saffron transition-colors text-xs font-mono font-bold tracking-wider">
-                  <span className="text-sm">{filteredWorks[0].stat}</span>
-                  <div className="flex items-center space-x-1.5">
-                    <span>ACTIVATE CONSOLE</span>
-                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1.5 transition-transform" />
-                  </div>
-                </div>
+              <div className="lg:col-span-7 space-y-5">
+                <h3 className="text-3xl md:text-5xl font-serif italic font-bold text-text-main group-hover:text-saffron transition-colors">
+                  {item.title}
+                </h3>
+                <p className="text-sm md:text-base text-text-dim leading-relaxed max-w-3xl">{item.subtitle}</p>
+                <p className="text-xs text-text-dim/50 font-mono">{item.tools.join(" / ")}</p>
               </div>
-            </motion.div>
-
-            {/* SECONDARY COMPANION STACK (5 columns) */}
-            <div className="lg:col-span-5 flex flex-col space-y-5">
-              <span className="font-mono text-[10px] text-saffron tracking-[0.25em] uppercase font-bold">// COMPANION COLLECTIONS</span>
-              <div className="flex flex-col space-y-4">
-                {filteredWorks.slice(1).map((item, idx) => (
-                  <motion.div
-                    layout
-                    key={item.id}
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.98 }}
-                    transition={{ duration: 0.4, delay: idx * 0.05 }}
-                    onClick={() => handleWorkClick(item)}
-                    className="group cursor-pointer border border-saffron/10 bg-bg-card hover:border-saffron/30 hover:bg-bg-card-hover transition-[background-color,border-color] duration-300 p-5 flex flex-col justify-between"
-                  >
-                    <div className="flex items-start space-x-4">
-                      {/* Smaller Cover Image */}
-                      <div className="relative w-24 h-16 sm:w-28 sm:h-20 shrink-0 overflow-hidden border border-saffron/10 bg-black/5">
-                        <img
-                          src={item.thumbnail}
-                          alt={item.title}
-                          referrerPolicy="no-referrer"
-                          className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-[filter] duration-500"
-                        />
-                      </div>
-
-                      <div className="flex-grow min-w-0 space-y-1">
-                        <div className="flex items-center justify-between text-[9px] font-mono text-text-dim/60 uppercase">
-                          <span>// 0{idx + 2}</span>
-                          <span className="text-saffron font-bold">[{item.category}]</span>
-                        </div>
-                        <h4 className="font-serif italic text-base font-bold truncate group-hover:text-saffron transition-colors">
-                          {item.title}
-                        </h4>
-                        <p className="text-xs text-text-dim/80 truncate">
-                          {item.subtitle}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="mt-4 pt-3 border-t border-saffron/5 flex justify-between items-center text-[10px] font-mono text-text-dim/60">
-                      <span className="truncate max-w-[200px]">{item.tools.slice(0, 2).join(" • ")}</span>
-                      <div className="flex items-center space-x-1 group-hover:text-saffron transition-colors font-bold">
-                        <span>LAUNCH</span>
-                        <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
+              <div className="lg:col-span-2 flex lg:flex-col lg:items-end justify-between gap-4 font-mono text-[10px] uppercase tracking-wider">
+                <span className="text-text-dim">{item.stat}</span>
+                <span className="flex items-center gap-2 text-saffron group-hover:text-white transition-colors">
+                  View <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                </span>
               </div>
             </div>
-          </React.Fragment>
-        )}
+          </motion.button>
+        ))}
       </motion.div>
-
     </SectionContainer>
   );
 };
