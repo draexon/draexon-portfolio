@@ -13,6 +13,12 @@ type LanguageStat = {
   pct: number;
 };
 
+type Contribution = {
+  date: string;
+  count: number;
+  level: number;
+};
+
 type GitHubStats = {
   repos: string;
   commits: string;
@@ -47,6 +53,30 @@ const wakatimeLanguagesShareUrl =
 const wakatimeCodingActivityShareUrl =
   "https://wakatime.com/share/@030bf6b4-bc5f-4420-b010-64bcee8bb8fd/a7a7022e-7a84-4419-af7c-b7671b256334.json";
 
+const totalContributionDays = 371;
+const fallbackContributions: Contribution[] = Array.from(
+  { length: totalContributionDays },
+  (_, index) => {
+    const cluster = Math.sin(index * 0.15) * Math.cos(index * 0.05);
+    let level = 0;
+    if (cluster > 0.75) level = 4;
+    else if (cluster > 0.45) level = 3;
+    else if (cluster > 0.15) level = 2;
+    else if (cluster > -0.15) level = 1;
+
+    if (Math.random() > 0.9) level = Math.floor(Math.random() * 5);
+
+    const date = new Date();
+    date.setDate(date.getDate() - (totalContributionDays - index));
+
+    return {
+      date: date.toISOString().slice(0, 10),
+      count: level === 0 ? 0 : level * 2 + 1,
+      level,
+    };
+  },
+);
+
 export const CodeSection: React.FC = () => {
   const githubUsername = import.meta.env.VITE_GITHUB_USERNAME;
   const [githubStats, setGithubStats] = useState<GitHubStats>({
@@ -58,30 +88,25 @@ export const CodeSection: React.FC = () => {
   const [wakaLanguages, setWakaLanguages] = useState<{ name: string; pct: number }[]>([]);
   const [wakaHours, setWakaHours] = useState<string | null>(null);
   const [isWakaTimeLoading, setIsWakaTimeLoading] = useState<boolean>(true);
+  const [contributions, setContributions] = useState<Contribution[]>([]);
   const languages = fallbackLanguages;
 
-  // Generate a realistic 53 weeks x 7 days contribution grid array
-  const totalDays = 371; // 53 weeks * 7
-  const days = Array.from({ length: totalDays }, (_, i) => {
-    const cluster = Math.sin(i * 0.15) * Math.cos(i * 0.05);
-    let level = 0;
-    if (cluster > 0.75) level = 4;
-    else if (cluster > 0.45) level = 3;
-    else if (cluster > 0.15) level = 2;
-    else if (cluster > -0.15) level = 1;
-
-    // Saffron noisy contributions
-    if (Math.random() > 0.9) level = Math.floor(Math.random() * 5);
-
-    const d = new Date();
-    d.setDate(d.getDate() - (totalDays - i));
-    const label = d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-
-    return { id: i, level, date: label, commits: level === 0 ? "No" : `${level * 2 + 1}` };
-  });
+  const contributionPadding: Contribution[] = contributions.length > 0
+    ? Array.from(
+        { length: Math.max(totalContributionDays - contributions.length, 0) },
+        (_, index, padding) => {
+          const date = new Date(`${contributions[0].date}T00:00:00`);
+          date.setDate(date.getDate() - (padding.length - index));
+          return { date: date.toISOString().slice(0, 10), count: 0, level: 0 };
+        },
+      )
+    : [];
+  const days = contributions.length > 0
+    ? [...contributionPadding, ...contributions]
+    : fallbackContributions;
 
   const weeks: typeof days[] = [];
-  for (let i = 0; i < totalDays; i += 7) {
+  for (let i = 0; i < totalContributionDays; i += 7) {
     weeks.push(days.slice(i, i + 7));
   }
 
@@ -89,7 +114,8 @@ export const CodeSection: React.FC = () => {
   const monthLabels: { label: string; index: number }[] = [];
   let prevMonth = "";
   weeks.forEach((week, index) => {
-    const dateObj = new Date(week[0].date);
+    if (week.length === 0) return;
+    const dateObj = new Date(`${week[0].date}T00:00:00`);
     const monthName = dateObj.toLocaleDateString("en-US", { month: "short" });
     if (monthName !== prevMonth) {
       monthLabels.push({ label: monthName, index });
@@ -97,7 +123,36 @@ export const CodeSection: React.FC = () => {
     }
   });
 
-  const [hoveredDay, setHoveredDay] = useState<{ date: string; commits: string } | null>(null);
+  const [hoveredDay, setHoveredDay] = useState<{ date: string; commits: number } | null>(null);
+
+  useEffect(() => {
+    if (!githubUsername) return;
+
+    let isMounted = true;
+    fetch(`https://github-contributions-api.jogruber.de/v4/${githubUsername}?y=last`)
+      .then((response) => {
+        if (!response.ok) throw new Error("GitHub contributions request failed.");
+        return response.json();
+      })
+      .then((data: { contributions?: Contribution[] }) => {
+        if (!isMounted || !Array.isArray(data.contributions) || data.contributions.length === 0) return;
+
+        const realContributions = data.contributions
+          .filter((day) =>
+            typeof day.date === "string" &&
+            Number.isFinite(day.count) &&
+            Number.isFinite(day.level)
+          )
+          .slice(-totalContributionDays);
+
+        if (realContributions.length > 0) setContributions(realContributions);
+      })
+      .catch(() => {});
+
+    return () => {
+      isMounted = false;
+    };
+  }, [githubUsername]);
 
   useEffect(() => {
     let isMounted = true;
@@ -304,8 +359,8 @@ export const CodeSection: React.FC = () => {
                   <div key={wIdx} className="flex flex-col gap-[3.5px]">
                     {week.map((d) => (
                       <div
-                        key={d.id}
-                        onMouseEnter={() => setHoveredDay({ date: d.date, commits: d.commits })}
+                        key={d.date}
+                        onMouseEnter={() => setHoveredDay({ date: d.date, commits: d.count })}
                         onMouseLeave={() => setHoveredDay(null)}
                         className="w-[10px] h-[10px] rounded-none transition-[transform,box-shadow] duration-150 cursor-crosshair hover:ring-1 hover:ring-saffron hover:scale-110"
                         style={{
