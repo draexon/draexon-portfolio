@@ -116,7 +116,7 @@ export const WorkSection: React.FC<WorkSectionProps> = ({ setActiveTab }) => {
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-6 mt-10 md:mt-0">
+        <div className="flex flex-wrap gap-[30px] mt-[60px] md:mt-0">
           {(["ALL", "EDITS", "MUSIC", "CODE"] as const).map((category) => (
             <button
               key={category}
@@ -140,10 +140,10 @@ export const WorkSection: React.FC<WorkSectionProps> = ({ setActiveTab }) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: index * 0.04 }}
             onClick={() => handleWorkClick(item)}
-            className="group relative overflow-visible w-full px-6 py-12 md:px-10 md:py-16 text-left cursor-pointer bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-500 ease-in-out"
+            className="group relative overflow-visible w-full p-[30px] md:p-[60px] text-left cursor-pointer bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-500 ease-in-out"
           >
             <CornerBrackets />
-            <div className="flex flex-col lg:grid lg:grid-cols-12 gap-6 lg:gap-12 lg:items-end">
+            <div className="flex flex-col lg:grid lg:grid-cols-12 gap-[30px] lg:gap-[60px] lg:items-end">
               <div className="lg:col-span-3 font-mono text-[10px] tracking-[0.22em] uppercase text-saffron">
                 {item.category} / {item.year} / {item.role}
               </div>

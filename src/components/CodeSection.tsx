@@ -309,10 +309,10 @@ export const CodeSection: React.FC = () => {
       {/* GitHub Contribution Graph Full Width */}
       <motion.div 
         variants={fadeInUpVariants}
-        className="group relative overflow-visible flex flex-col space-y-8 px-6 py-8 md:px-10 md:py-10 bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-500 ease-in-out"
+        className="group relative overflow-visible flex flex-col space-y-[30px] p-[30px] md:p-[60px] bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-500 ease-in-out"
       >
         <CornerBrackets />
-        <div className="flex justify-between items-end flex-wrap gap-8">
+        <div className="flex justify-between items-end flex-wrap gap-[30px]">
           <div>
             <h3 className="font-serif italic text-base sm:text-lg text-text-main font-bold">Contribution Cadence</h3>
             <p className="text-[11px] text-text-dim/50 font-sans mt-0.5">
@@ -401,7 +401,7 @@ export const CodeSection: React.FC = () => {
       >
         
         {/* Left Column: Languages */}
-        <div className="group relative overflow-visible flex h-full min-h-[280px] flex-col justify-between space-y-10 px-6 py-8 md:px-8 md:py-10 bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-500 ease-in-out">
+        <div className="group relative overflow-visible flex h-full min-h-[280px] flex-col justify-between space-y-[30px] p-[30px] md:p-[60px] bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-500 ease-in-out">
           <CornerBrackets />
           <div>
             <h3 className="font-serif italic text-xl text-saffron font-bold">Languages</h3>
@@ -431,7 +431,7 @@ export const CodeSection: React.FC = () => {
         </div>
 
         {/* Right Column: VS Code Time */}
-        <div className="group relative overflow-visible flex h-full min-h-[280px] flex-col justify-between px-6 py-8 md:px-8 md:py-10 bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-500 ease-in-out">
+        <div className="group relative overflow-visible flex h-full min-h-[280px] flex-col justify-between p-[30px] md:p-[60px] bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-500 ease-in-out">
           <CornerBrackets />
           <div>
             <h3 className="font-serif italic text-xl text-text-main font-bold">VS Code this week</h3>
@@ -457,22 +457,22 @@ export const CodeSection: React.FC = () => {
         variants={fadeInUpVariants}
         className="grid auto-rows-[160px] grid-cols-4 gap-0 items-stretch font-mono text-xs sm:text-sm"
       >
-        <div className="group relative overflow-visible flex h-full flex-col gap-3 px-6 py-8 bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-500 ease-in-out">
+        <div className="group relative overflow-visible flex h-full flex-col gap-3 p-[30px] bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-500 ease-in-out">
           <CornerBrackets />
           <span className="text-saffron font-serif font-bold text-4xl lg:text-5xl">{githubStats.repos}</span>
           <span className="text-[9px] text-text-dim/50 uppercase tracking-wider mt-0.5">Active Repositories</span>
         </div>
-        <div className="group relative overflow-visible flex h-full flex-col gap-3 px-6 py-8 bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-500 ease-in-out">
+        <div className="group relative overflow-visible flex h-full flex-col gap-3 p-[30px] bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-500 ease-in-out">
           <CornerBrackets />
           <span className="text-saffron font-serif font-bold text-4xl lg:text-5xl">{githubStats.commits}</span>
           <span className="text-[9px] text-text-dim/50 uppercase tracking-wider mt-0.5">Total Commits</span>
         </div>
-        <div className="group relative overflow-visible flex h-full flex-col gap-3 px-6 py-8 bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-500 ease-in-out">
+        <div className="group relative overflow-visible flex h-full flex-col gap-3 p-[30px] bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-500 ease-in-out">
           <CornerBrackets />
           <span className="text-saffron font-serif font-bold text-3xl lg:text-4xl">{githubStats.topLanguage}</span>
           <span className="text-[9px] text-text-dim/50 uppercase tracking-wider mt-0.5">Top Language</span>
         </div>
-        <div className="group relative overflow-visible flex h-full flex-col gap-3 px-6 py-8 bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-500 ease-in-out">
+        <div className="group relative overflow-visible flex h-full flex-col gap-3 p-[30px] bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-500 ease-in-out">
           <CornerBrackets />
           <span className="text-saffron font-serif font-bold text-4xl lg:text-5xl">{githubStats.stars}</span>
           <span className="text-[9px] text-text-dim/50 uppercase tracking-wider mt-0.5">Total Stars Earned</span>

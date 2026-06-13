@@ -45,11 +45,11 @@ export const MusicSection: React.FC<MusicSectionProps> = ({
   const renderTrackList = (tracks: SongItem[], label: string) => (
     <div className="space-y-8">
       <p className="font-mono text-xs text-saffron tracking-[0.2em] uppercase font-bold">{label}</p>
-      <div className="grid grid-cols-2 gap-6 items-stretch">
+      <div className="grid grid-cols-2 gap-[30px] items-stretch">
         {tracks.map((track) => {
           const isCurrent = activeTrackId === track.id && audioPlaying;
           return (
-            <article key={track.id} className="group relative overflow-visible h-full flex flex-col justify-between px-6 py-10 md:px-8 md:py-14 bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-500 ease-in-out">
+            <article key={track.id} className="group relative overflow-visible h-full flex flex-col justify-between p-[30px] md:p-[60px] bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-500 ease-in-out">
               <CornerBrackets />
               <div className="flex h-full flex-col justify-between gap-8">
                 <div className="space-y-5">
@@ -92,14 +92,14 @@ export const MusicSection: React.FC<MusicSectionProps> = ({
             Experimental structural ambient, bass architectures, and procedural modular synthesis. Grounding electronic computing with analog acoustic environments.
           </p>
         </div>
-        <div className="group relative overflow-visible space-y-3 px-6 py-8 lg:text-right bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-500 ease-in-out">
+        <div className="group relative overflow-visible space-y-3 p-[30px] lg:text-right bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-500 ease-in-out">
           <CornerBrackets />
           <span className="text-4xl md:text-5xl font-serif font-black tracking-tight text-saffron block">1,240,000</span>
           <span className="font-mono text-[10px] text-text-dim uppercase tracking-[0.2em] block">Total Spotify streams</span>
         </div>
       </motion.div>
 
-      <motion.div variants={fadeInUpVariants} className="group relative overflow-visible space-y-6 px-6 py-8 md:px-10 md:py-10 bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-500 ease-in-out">
+      <motion.div variants={fadeInUpVariants} className="group relative overflow-visible space-y-6 p-[30px] md:p-[60px] bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-500 ease-in-out">
         <CornerBrackets />
         <div className="flex justify-between items-center gap-6 font-mono text-[10px] text-saffron">
           <span className="flex items-center gap-2 font-bold uppercase tracking-wider"><Activity className="w-3.5 h-3.5" /> Synthesizer Oscillator</span>
@@ -114,7 +114,7 @@ export const MusicSection: React.FC<MusicSectionProps> = ({
         </div>
       </motion.div>
 
-      <motion.div variants={fadeInUpVariants} className="grid grid-cols-1 gap-20 items-stretch">
+      <motion.div variants={fadeInUpVariants} className="grid grid-cols-1 gap-[60px] items-stretch">
         {renderTrackList(latestTracks, "// LATEST TRACKS")}
         {renderTrackList(topTracks, "// TOP TRACKS")}
       </motion.div>

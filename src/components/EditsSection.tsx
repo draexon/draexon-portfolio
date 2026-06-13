@@ -42,7 +42,7 @@ export const EditsSection: React.FC = () => {
       <p className="font-mono text-xs text-saffron tracking-[0.2em] uppercase font-bold">{label}</p>
       <div className="divide-y divide-white/[0.08]">
         {items.map((item) => (
-          <article key={item.id} className="group relative overflow-visible px-6 py-10 md:px-8 md:py-14 space-y-5 bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-500 ease-in-out">
+          <article key={item.id} className="group relative overflow-visible p-[30px] md:p-[60px] space-y-5 bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-500 ease-in-out">
             <CornerBrackets />
             <div className="font-mono text-[10px] tracking-[0.22em] uppercase text-saffron">
               {item.softwareTag} / {item.software}
@@ -69,9 +69,9 @@ export const EditsSection: React.FC = () => {
         </p>
       </motion.div>
 
-      <motion.div variants={fadeInUpVariants} className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-14 items-stretch">
+      <motion.div variants={fadeInUpVariants} className="grid grid-cols-2 md:grid-cols-4 gap-[30px] items-stretch">
         {stats.map((stat) => (
-          <div key={stat.name} className="group relative overflow-visible h-full space-y-3 px-6 py-8 bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-500 ease-in-out">
+          <div key={stat.name} className="group relative overflow-visible h-full space-y-3 p-[30px] bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-500 ease-in-out">
             <CornerBrackets />
             <span className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold tracking-tight text-saffron block">{stat.value}</span>
             <span className="text-[10px] font-mono text-text-dim uppercase tracking-[0.18em] block">{stat.name}</span>
@@ -80,7 +80,7 @@ export const EditsSection: React.FC = () => {
         ))}
       </motion.div>
 
-      <motion.div variants={fadeInUpVariants} className="grid grid-cols-1 md:grid-cols-2 gap-20 lg:gap-28 items-stretch">
+      <motion.div variants={fadeInUpVariants} className="grid grid-cols-1 md:grid-cols-2 gap-[60px] items-stretch">
         {renderEditList(latestEdits, "// LATEST EDITS")}
         {renderEditList(favouriteEdits, "// FAVOURITE EDITS")}
       </motion.div>
