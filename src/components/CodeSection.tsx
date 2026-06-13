@@ -3,18 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-// Register callbacks immediately at module load time.
-const wakatimeLanguagesData: any = { resolve: null };
-const wakatimeActivityData: any = { resolve: null };
-
-(window as any).wakatimeLanguagesCallback = (data: any) => {
-  if (wakatimeLanguagesData.resolve) wakatimeLanguagesData.resolve(data);
-};
-
-(window as any).wakatimeCodingActivityCallback = (data: any) => {
-  if (wakatimeActivityData.resolve) wakatimeActivityData.resolve(data);
-};
-
 import React, { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { GitBranch, Star, Terminal, GitCommit, Code2, Layers } from "lucide-react";
@@ -23,6 +11,28 @@ import { SectionContainer, fadeInUpVariants } from "./SectionContainer";
 type LanguageStat = {
   name: string;
   pct: number;
+};
+
+type GitHubStats = {
+  repos: string;
+  commits: string;
+  stars: string;
+  topLanguage: string;
+};
+
+const fallbackGitHubStats: GitHubStats = {
+  repos: "114",
+  commits: "8.2k",
+  stars: "0",
+  topLanguage: "TypeScript",
+};
+
+const formatGitHubCount = (count: number) => {
+  if (!Number.isFinite(count) || count < 0) return "0";
+  if (count < 1000) return String(count);
+
+  const formatted = (count / 1000).toFixed(1).replace(/\.0$/, "");
+  return `${formatted}k`;
 };
 
 const fallbackLanguages: LanguageStat[] = [
@@ -37,37 +47,13 @@ const wakatimeLanguagesShareUrl =
 const wakatimeCodingActivityShareUrl =
   "https://wakatime.com/share/@030bf6b4-bc5f-4420-b010-64bcee8bb8fd/a7a7022e-7a84-4419-af7c-b7671b256334.json";
 
-function fetchLanguages(): Promise<any> {
-  return new Promise((resolve, reject) => {
-    wakatimeLanguagesData.resolve = resolve;
-    const script = document.createElement("script");
-    script.id = "wakatimeLanguagesScript";
-    script.src = `${wakatimeLanguagesShareUrl}?callback=wakatimeLanguagesCallback`;
-    script.onerror = () => {
-      reject(new Error("WakaTime languages JSONP failed."));
-    };
-    document.body.appendChild(script);
-  });
-}
-
-function fetchActivity(): Promise<any> {
-  return new Promise((resolve, reject) => {
-    wakatimeActivityData.resolve = resolve;
-    const script = document.createElement("script");
-    script.id = "wakatimeCodingActivityScript";
-    script.src = `${wakatimeCodingActivityShareUrl}?callback=wakatimeCodingActivityCallback`;
-    script.onerror = () => {
-      reject(new Error("WakaTime coding activity JSONP failed."));
-    };
-    document.body.appendChild(script);
-  });
-}
-
 export const CodeSection: React.FC = () => {
   const githubUsername = import.meta.env.VITE_GITHUB_USERNAME;
-  const [githubStats, setGithubStats] = useState<{ publicRepos: number | null; status: "idle" | "loading" | "loaded" | "error" }>({
-    publicRepos: null,
-    status: "idle",
+  const [githubStats, setGithubStats] = useState<GitHubStats>({
+    repos: "...",
+    commits: "...",
+    stars: "...",
+    topLanguage: "...",
   });
   const [wakaLanguages, setWakaLanguages] = useState<{ name: string; pct: number }[]>([]);
   const [wakaHours, setWakaHours] = useState<string | null>(null);
@@ -114,28 +100,55 @@ export const CodeSection: React.FC = () => {
   const [hoveredDay, setHoveredDay] = useState<{ date: string; commits: string } | null>(null);
 
   useEffect(() => {
-    if (!githubUsername) return;
-
     let isMounted = true;
-    setGithubStats((prev) => ({ ...prev, status: "loading" }));
+    setGithubStats({ repos: "...", commits: "...", stars: "...", topLanguage: "..." });
 
-    fetch(`https://api.github.com/users/${githubUsername}`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("GitHub profile request failed.");
-        }
-        return response.json();
-      })
-      .then((data: { public_repos?: number }) => {
+    if (!githubUsername) {
+      setGithubStats(fallbackGitHubStats);
+      return () => {
+        isMounted = false;
+      };
+    }
+
+    const requestJson = async (url: string, init?: RequestInit) => {
+      const response = await fetch(url, init);
+      if (!response.ok) {
+        throw new Error(`GitHub request failed with status ${response.status}.`);
+      }
+      return response.json();
+    };
+
+    Promise.all([
+      requestJson(`https://api.github.com/users/${githubUsername}`),
+      requestJson(`https://api.github.com/users/${githubUsername}/repos?per_page=100&sort=updated`),
+      requestJson(`https://api.github.com/search/commits?q=author:${githubUsername}&per_page=1`, {
+        headers: { Accept: "application/vnd.github.cloak-preview" },
+      }),
+    ])
+      .then(([user, repos, commits]: [any, any[], any]) => {
         if (!isMounted) return;
+
+        const languageCounts = repos.reduce<Record<string, number>>((counts, repo) => {
+          if (typeof repo.language === "string") {
+            counts[repo.language] = (counts[repo.language] ?? 0) + 1;
+          }
+          return counts;
+        }, {});
+        const topLanguage = Object.entries(languageCounts).sort((a, b) => b[1] - a[1])[0]?.[0];
+        const totalStars = repos.reduce(
+          (total, repo) => total + (typeof repo.stargazers_count === "number" ? repo.stargazers_count : 0),
+          0,
+        );
+
         setGithubStats({
-          publicRepos: typeof data.public_repos === "number" ? data.public_repos : null,
-          status: "loaded",
+          repos: formatGitHubCount(Number(user.public_repos)),
+          commits: formatGitHubCount(Number(commits.total_count)),
+          stars: formatGitHubCount(totalStars),
+          topLanguage: topLanguage ?? fallbackGitHubStats.topLanguage,
         });
       })
       .catch(() => {
-        if (!isMounted) return;
-        setGithubStats({ publicRepos: null, status: "error" });
+        if (isMounted) setGithubStats(fallbackGitHubStats);
       });
 
     return () => {
@@ -145,58 +158,79 @@ export const CodeSection: React.FC = () => {
 
   useEffect(() => {
     let isMounted = true;
+    let completedRequests = 0;
     setIsWakaTimeLoading(true);
 
-    fetchLanguages().then((response) => {
-      if (!isMounted || !Array.isArray(response.data)) return;
-      const langs = response.data.slice(0, 4).map((l: any) => ({
-        name: l.name,
-        pct: Math.round(l.percent),
-      }));
-      setWakaLanguages(langs);
-    }).catch(() => {});
-
-    fetchActivity().then((response) => {
-      if (!isMounted || !Array.isArray(response.data)) return;
-      const days = response.data;
-      const totalSeconds = days.reduce((sum: number, day: any) =>
-        sum + (day.grand_total?.total_seconds || 0), 0);
-      const hours = Math.floor(totalSeconds / 3600);
-      const minutes = Math.floor((totalSeconds % 3600) / 60);
-      setWakaHours(`${hours}.${String(minutes).padStart(2, "0")} hrs`);
-    }).catch(() => {}).finally(() => {
-      if (isMounted) {
+    const markRequestComplete = () => {
+      completedRequests += 1;
+      if (isMounted && completedRequests === 2) {
         setIsWakaTimeLoading(false);
       }
-    });
+    };
+
+    (window as any).wakatimeLanguagesCallback = (response: any) => {
+      console.log("Languages data:", JSON.stringify(response, null, 2));
+
+      if (isMounted && Array.isArray(response?.data)) {
+        const languages = response.data
+          .slice(0, 4)
+          .map((language: any) => ({
+            name: language.name,
+            pct: Math.round(Number(language.percent)),
+          }))
+          .filter((language: LanguageStat) =>
+            typeof language.name === "string" && Number.isFinite(language.pct)
+          );
+
+        setWakaLanguages(languages);
+      }
+
+      markRequestComplete();
+    };
+
+    (window as any).wakatimeCodingActivityCallback = (response: any) => {
+      console.log("Activity data:", JSON.stringify(response, null, 2));
+
+      if (isMounted) {
+        const activityDays = Array.isArray(response?.data)
+          ? response.data
+          : Array.isArray(response?.days)
+            ? response.days
+            : [];
+        const totalSeconds = activityDays.reduce(
+          (sum: number, day: any) => sum + Number(day?.grand_total?.total_seconds || 0),
+          0,
+        );
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+
+        setWakaHours(`${hours} hrs ${minutes} mins`);
+      }
+
+      markRequestComplete();
+    };
+
+    const languagesScript = document.createElement("script");
+    languagesScript.id = "wakatimeLanguagesScript";
+    languagesScript.src = `${wakatimeLanguagesShareUrl}?callback=wakatimeLanguagesCallback`;
+    languagesScript.onerror = markRequestComplete;
+
+    const activityScript = document.createElement("script");
+    activityScript.id = "wakatimeCodingActivityScript";
+    activityScript.src = `${wakatimeCodingActivityShareUrl}?callback=wakatimeCodingActivityCallback`;
+    activityScript.onerror = markRequestComplete;
+
+    document.body.append(languagesScript, activityScript);
 
     return () => {
       isMounted = false;
-      wakatimeLanguagesData.resolve = null;
-      wakatimeActivityData.resolve = null;
-      document.getElementById("wakatimeLanguagesScript")?.remove();
-      document.getElementById("wakatimeCodingActivityScript")?.remove();
+      languagesScript.remove();
+      activityScript.remove();
+      delete (window as any).wakatimeLanguagesCallback;
+      delete (window as any).wakatimeCodingActivityCallback;
     };
   }, []);
 
-  useEffect(() => {
-    if (wakaLanguages.length > 0) {
-      setIsWakaTimeLoading(false);
-    }
-  }, [wakaLanguages]);
-
-  useEffect(() => {
-    if (wakaHours) {
-      setIsWakaTimeLoading(false);
-    }
-  }, [wakaHours]);
-
-  const repoCountLabel =
-    githubStats.publicRepos !== null
-      ? `${githubStats.publicRepos} repos`
-      : githubStats.status === "loading"
-        ? "Loading"
-        : "Unavailable";
   const displayedLanguages = wakaLanguages.length > 0 ? wakaLanguages : languages;
 
   return (
@@ -362,19 +396,23 @@ export const CodeSection: React.FC = () => {
       {/* GitHub Summary Row */}
       <motion.div 
         variants={fadeInUpVariants}
-        className="border border-saffron/20 bg-bg-card px-6 py-4 grid grid-cols-3 gap-4 items-center text-center divide-x divide-saffron/15 font-mono text-xs sm:text-sm transition-colors duration-300"
+        className="border border-saffron/20 bg-bg-card px-6 py-4 grid grid-cols-2 md:grid-cols-4 gap-4 items-center text-center font-mono text-xs sm:text-sm transition-colors duration-300"
       >
         <div className="flex flex-col py-1">
-          <span className="text-saffron font-bold text-base sm:text-lg">{repoCountLabel}</span>
+          <span className="text-saffron font-bold text-base sm:text-lg">{githubStats.repos}</span>
           <span className="text-[9px] text-text-dim/50 uppercase tracking-wider mt-0.5">Active Repositories</span>
         </div>
         <div className="flex flex-col py-1">
-          <span className="text-text-main font-bold text-base sm:text-lg">8.2k commits</span>
-          <span className="text-[9px] text-text-dim/50 uppercase tracking-wider mt-0.5">Total Commits (2026)</span>
+          <span className="text-text-main font-bold text-base sm:text-lg">{githubStats.commits}</span>
+          <span className="text-[9px] text-text-dim/50 uppercase tracking-wider mt-0.5">Total Commits</span>
         </div>
         <div className="flex flex-col py-1">
-          <span className="text-saffron font-bold text-base sm:text-lg">GitHub</span>
+          <span className="text-saffron font-bold text-base sm:text-lg">{githubStats.topLanguage}</span>
           <span className="text-[9px] text-text-dim/50 uppercase tracking-wider mt-0.5">Top Language</span>
+        </div>
+        <div className="flex flex-col py-1">
+          <span className="text-text-main font-bold text-base sm:text-lg">{githubStats.stars}</span>
+          <span className="text-[9px] text-text-dim/50 uppercase tracking-wider mt-0.5">Total Stars Earned</span>
         </div>
       </motion.div>
 
