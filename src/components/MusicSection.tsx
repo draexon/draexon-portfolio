@@ -45,13 +45,13 @@ export const MusicSection: React.FC<MusicSectionProps> = ({
   const renderTrackList = (tracks: SongItem[], label: string) => (
     <div className="space-y-8">
       <p className="font-mono text-xs text-saffron tracking-[0.2em] uppercase font-bold">{label}</p>
-      <div className="divide-y divide-white/[0.08]">
+      <div className="grid grid-cols-2 gap-6 items-stretch">
         {tracks.map((track) => {
           const isCurrent = activeTrackId === track.id && audioPlaying;
           return (
-            <article key={track.id} className="group relative overflow-visible px-6 py-10 md:px-8 md:py-14 bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-500 ease-in-out">
+            <article key={track.id} className="group relative overflow-visible h-full flex flex-col justify-between px-6 py-10 md:px-8 md:py-14 bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-500 ease-in-out">
               <CornerBrackets />
-              <div className="flex flex-col sm:grid sm:grid-cols-[1fr_auto] gap-6 sm:items-end">
+              <div className="flex h-full flex-col justify-between gap-8">
                 <div className="space-y-5">
                   <div className="font-mono text-[10px] text-saffron tracking-[0.18em] uppercase">
                     {track.bpm} BPM / {track.key} / {track.duration}
@@ -114,7 +114,7 @@ export const MusicSection: React.FC<MusicSectionProps> = ({
         </div>
       </motion.div>
 
-      <motion.div variants={fadeInUpVariants} className="grid grid-cols-1 md:grid-cols-2 gap-20 lg:gap-28">
+      <motion.div variants={fadeInUpVariants} className="grid grid-cols-1 gap-20 items-stretch">
         {renderTrackList(latestTracks, "// LATEST TRACKS")}
         {renderTrackList(topTracks, "// TOP TRACKS")}
       </motion.div>

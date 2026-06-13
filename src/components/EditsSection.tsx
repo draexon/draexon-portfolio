@@ -38,7 +38,7 @@ export const EditsSection: React.FC = () => {
   ];
 
   const renderEditList = (items: EditCard[], label: string) => (
-    <div className="space-y-8">
+    <div className="h-full space-y-8">
       <p className="font-mono text-xs text-saffron tracking-[0.2em] uppercase font-bold">{label}</p>
       <div className="divide-y divide-white/[0.08]">
         {items.map((item) => (
@@ -69,9 +69,9 @@ export const EditsSection: React.FC = () => {
         </p>
       </motion.div>
 
-      <motion.div variants={fadeInUpVariants} className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-14">
+      <motion.div variants={fadeInUpVariants} className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-14 items-stretch">
         {stats.map((stat) => (
-          <div key={stat.name} className="group relative overflow-visible space-y-3 px-6 py-8 bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-500 ease-in-out">
+          <div key={stat.name} className="group relative overflow-visible h-full space-y-3 px-6 py-8 bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-500 ease-in-out">
             <CornerBrackets />
             <span className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold tracking-tight text-saffron block">{stat.value}</span>
             <span className="text-[10px] font-mono text-text-dim uppercase tracking-[0.18em] block">{stat.name}</span>
@@ -80,7 +80,7 @@ export const EditsSection: React.FC = () => {
         ))}
       </motion.div>
 
-      <motion.div variants={fadeInUpVariants} className="grid grid-cols-1 md:grid-cols-2 gap-20 lg:gap-28">
+      <motion.div variants={fadeInUpVariants} className="grid grid-cols-1 md:grid-cols-2 gap-20 lg:gap-28 items-stretch">
         {renderEditList(latestEdits, "// LATEST EDITS")}
         {renderEditList(favouriteEdits, "// FAVOURITE EDITS")}
       </motion.div>
